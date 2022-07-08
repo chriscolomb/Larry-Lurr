@@ -1,29 +1,35 @@
 import nextcord
+import random
 from nextcord.ext import commands
-import os
 
-# from cogs import help_commands
+bot = commands.Bot(command_prefix="!")
 
-from nextcord.ext.commands.core import group
+@bot.command()
+async def larry(ctx):
+    """
+    See a random Larry image
+    """
 
-# sys.path.append("C:\Users\Chapm\GitHub\Pew_Pew\cogs")
-# from cogs import help_commands
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(random.randint(0, 61)) + ".png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=larry_image)
+    embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
+    await ctx.channel.send(embed=embed)
 
 
-intents = nextcord.Intents.default()
-intents.members = True
-client = commands.Bot(command_prefix="!", intents=intents)
-# test
-# server
-# switch
-# client = commands.Bot(command_prefix = "??", intents = intents, description="**Ranked Matchmaking Bot for SSBU with ELO Rating!**\n> To see a description for each command based on category: \n> `=help command_category`\n> For help with specific commands: \n> `=help command_name`")
-# client.help_command = help_commands.MyHelpCommand()
+@bot.command()
+async def larryfinger(ctx):
+    """
+    See a Larry Finger image
+    """
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
-client.run('NzkwNzg0MzU0NTgxNzQxNTk5.X-FpUg.AfDsH6U1x5GNlE_1tjGwmjjuNVU')
-# test
-# server
-# switch
-# client.run('OTIzNzk0ODAyNTM1OTY4Nzg5.YcVM9A.M6kP6qwzaKDO3PvlXXh07kzX6kk')
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=larry_image)
+    embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
+    await ctx.channel.send(embed=embed)
+
+
+bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU')

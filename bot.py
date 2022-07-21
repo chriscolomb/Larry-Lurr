@@ -1,12 +1,12 @@
 import nextcord
-import random
+import random as r
 from nextcord.ext import commands
 
 bot = commands.Bot(command_prefix="!")
 
 
 def message_embed_color(embed):
-    random_color = random.randint(0, 2)
+    random_color = r.randint(0, 2)
     if random_color == 0:
         embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
     elif random_color == 1:
@@ -20,7 +20,7 @@ def larry_command(embed):
     See a random Larry image
     """
 
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(random.randint(0, 64)) + ".png"
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 64)) + ".png"
 
     embed.set_image(url=larry_image)
     message_embed_color(embed)
@@ -82,16 +82,19 @@ async def larrydrip(ctx):
     await ctx.channel.send(embed=embed)
 
 
-# @bot.command()
-# async def random(embed):
-#     """
-#     See a random Smash character image
-#     """
-#
-#     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(random.randint(0, 666)) + ".png"
-#
-#     embed.set_image(url=random_image)
-#     message_embed_color(embed)
+@bot.command()
+async def random(ctx):
+    """
+    See a random Smash character image
+    """
+
+    random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 666)) + ".png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=random_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
 
 
-bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU')
+bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
+# bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0') #Fake

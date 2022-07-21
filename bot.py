@@ -82,4 +82,18 @@ async def larrydrip(ctx):
     await ctx.channel.send(embed=embed)
 
 
+@bot.command()
+async def random(ctx):
+    """
+    See a random Smash character image
+    """
+
+    random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(random.randint(0, 666)) + ".png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=random_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
+
 bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU')

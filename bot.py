@@ -15,7 +15,7 @@ def message_embed_color(embed):
         embed.colour = nextcord.Colour.from_rgb(154, 38, 38)
 
 
-def larry_command(ctx, embed):
+def larry_command(embed):
     """
     See a random Larry image
     """
@@ -29,14 +29,14 @@ def larry_command(ctx, embed):
 @bot.command()
 async def larry(ctx):
     embed = nextcord.Embed()
-    larry_command(ctx, embed)
+    larry_command(embed)
     await ctx.channel.send(embed=embed)
 
 
 @bot.command()
 async def Larry(ctx):
     embed = nextcord.Embed()
-    larry_command(ctx, embed)
+    larry_command(embed)
     await ctx.channel.send(embed=embed)
 
 

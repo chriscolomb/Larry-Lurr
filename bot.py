@@ -4,17 +4,39 @@ from nextcord.ext import commands
 
 bot = commands.Bot(command_prefix="!")
 
-@bot.command()
-async def larry(ctx):
+
+def message_embed_color(embed):
+    random_color = random.randint(0, 2)
+    if random_color == 0:
+        embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
+    elif random_color == 1:
+        embed.colour = nextcord.Colour.from_rgb(40, 56, 106)
+    else:
+        embed.colour = nextcord.Colour.from_rgb(154, 38, 38)
+
+
+def larry_command(ctx, embed):
     """
     See a random Larry image
     """
 
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(random.randint(0, 61)) + ".png"
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(random.randint(0, 64)) + ".png"
 
-    embed = nextcord.Embed()
     embed.set_image(url=larry_image)
-    embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
+    message_embed_color(embed)
+
+
+@bot.command()
+async def larry(ctx):
+    embed = nextcord.Embed()
+    larry_command(ctx, embed)
+    await ctx.channel.send(embed=embed)
+
+
+@bot.command()
+async def Larry(ctx):
+    embed = nextcord.Embed()
+    larry_command(ctx, embed)
     await ctx.channel.send(embed=embed)
 
 
@@ -28,7 +50,7 @@ async def larryfinger(ctx):
 
     embed = nextcord.Embed()
     embed.set_image(url=larry_image)
-    embed.colour = nextcord.Colour.from_rgb(85, 174, 131)
+    message_embed_color(embed)
     await ctx.channel.send(embed=embed)
 
 

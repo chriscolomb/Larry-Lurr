@@ -54,4 +54,32 @@ async def larryfinger(ctx):
     await ctx.channel.send(embed=embed)
 
 
+@bot.command()
+async def larry33(ctx):
+    """
+    See a Larry 33rd image
+    """
+
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=larry_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
+
+@bot.command()
+async def larrydrip(ctx):
+    """
+    See a Larry Drip image
+    """
+
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=larry_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
+
 bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU')

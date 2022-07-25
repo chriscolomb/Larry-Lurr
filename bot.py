@@ -2,7 +2,7 @@ import nextcord
 import random as r
 from nextcord.ext import commands
 
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix="!", help_command=None)
 
 
 def message_embed_color(embed):
@@ -16,10 +16,6 @@ def message_embed_color(embed):
 
 
 def larry_command(embed):
-    """
-    See a random Larry image
-    """
-
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 64)) + ".png"
 
     embed.set_image(url=larry_image)
@@ -28,6 +24,10 @@ def larry_command(embed):
 
 @bot.command()
 async def larry(ctx):
+    """
+    Random Larry image
+    """
+
     embed = nextcord.Embed()
     larry_command(embed)
     await ctx.channel.send(embed=embed)
@@ -35,6 +35,10 @@ async def larry(ctx):
 
 @bot.command()
 async def Larry(ctx):
+    """
+    Random Larry image
+    """
+
     embed = nextcord.Embed()
     larry_command(embed)
     await ctx.channel.send(embed=embed)
@@ -43,7 +47,7 @@ async def Larry(ctx):
 @bot.command()
 async def larryfinger(ctx):
     """
-    See a Larry Finger image
+    Larry Finger image
     """
 
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png"
@@ -57,7 +61,7 @@ async def larryfinger(ctx):
 @bot.command()
 async def larry33(ctx):
     """
-    See a Larry 33rd image
+    Larry 33rd image
     """
 
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png"
@@ -71,7 +75,7 @@ async def larry33(ctx):
 @bot.command()
 async def larrydrip(ctx):
     """
-    See a Larry Drip image
+    Larry Drip image
     """
 
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
@@ -85,7 +89,7 @@ async def larrydrip(ctx):
 @bot.command()
 async def random(ctx):
     """
-    See a random Smash character image
+    Random character image
     """
 
     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
@@ -93,6 +97,24 @@ async def random(ctx):
     embed = nextcord.Embed()
     embed.set_image(url=random_image)
     message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
+
+@bot.command()
+async def help(ctx):
+    embed = nextcord.Embed(
+        title="Bot Commands"
+    )
+    message_embed_color(embed)
+
+    image_value = "`      !larry` *Random Larry image*\n" \
+                  "`      !Larry` *Random Larry image*\n" \
+                  "`  !larrydrip` *Larry Drip image*\n" \
+                  "`    !larry33` *Larry 33rd image*\n" \
+                  "`!larryfinger` *Larry Finger image*\n" \
+                  "`     !random` *Random character image*"
+    embed.add_field(name="Image Commands", value=image_value)
+
     await ctx.channel.send(embed=embed)
 
 

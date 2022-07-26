@@ -22,7 +22,7 @@ def message_embed_color(embed):
 
 
 def larry_command(embed):
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 64)) + ".png"
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 65)) + ".png"
 
     embed.set_image(url=larry_image)
     message_embed_color(embed)
@@ -106,19 +106,64 @@ async def random(ctx):
     await ctx.channel.send(embed=embed)
 
 
+# @bot.command()
+# async def ironman(ctx):
+#     ongoing = True
+#     percentage = 0
+#     characters_left = 86
+#     while ongoing:
+#         embed = nextcord.Embed(title="Ironman Challenge")
+#         percentage_field = str(percentage/100) + "% Complete"
+#         embed.add_field(name=percentage_field, value="Next Character:")
+#         random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
+#         embed.set_image(url=random_image)
+#         footer_text = str(characters_left) + " Characters Left!"
+#         embed.set_footer(text=footer_text)
+#         characters_left -= 1
+#         # buttons = ()
+#         ongoing = False
+#     # await ctx.channel.send(embed=embed, view=buttons)
+#     await ctx.channel.send(embed=embed)
+
+# @bot.command()
+# async def CB(ctx, user: nextcord.Member, size):
+#     channel = bot.get_channel(ctx.channel.id)
+#     guild_id = ctx.message.guild.id
+#     server = bot.get_guild(guild_id)
+#     p1_username = str(server.get_member(ctx.author.id))
+#     p2_username = str(server.get_member(user.id))
+#
+#     # Error handling
+#     if user.id == ctx.author.id:
+#         embed = nextcord.Embed(
+#                 title="You cannot initiate a Crew Battle with yourself."
+#         )
+#         message_embed_color(embed)
+#         await ctx.channel.send(embed=embed)
+#         return None
+#     elif channel.type == nextcord.ChannelType.public_thread:
+#         embed = nextcord.Embed(
+#             title="Cannot do `!CB` command within a thread!"
+#         )
+#         message_embed_color(embed)
+#         await ctx.channel.send(embed=embed)
+#         return None
+#
+#     await ctx.channel.send("1v1 is size " + str(size))
+
+
 @bot.command()
 async def help(ctx):
     embed = nextcord.Embed(
-        title="Bot Commands"
+        title="Help"
     )
     message_embed_color(embed)
 
-    image_value = "`      !larry` *Random Larry image*\n" \
-                  "`      !Larry` *Random Larry image*\n" \
-                  "`  !larrydrip` *Larry Drip image*\n" \
-                  "`    !larry33` *Larry 33rd image*\n" \
-                  "`!larryfinger` *Larry Finger image*\n" \
-                  "`     !random` *Random character image*"
+    image_value = "`      !larry` *Random Larry*\n" \
+                  "`  !larrydrip` *Larry Drip*\n" \
+                  "`    !larry33` *Larry 33rd*\n" \
+                  "`!larryfinger` *Larry Finger*\n" \
+                  "`     !random` *Random character*"
     embed.add_field(name="Image Commands", value=image_value)
 
     await ctx.channel.send(embed=embed)

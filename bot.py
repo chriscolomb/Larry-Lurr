@@ -106,6 +106,20 @@ async def random(ctx):
     await ctx.channel.send(embed=embed)
 
 
+@bot.command()
+async def judge(ctx):
+    """
+    Random judge image
+    """
+
+    judge_image = "https://github.com/chriscolomb/ssbu/raw/master/judge/judge_" + str(r.randint(1, 9)) + ".png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=judge_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
+
 # @bot.command()
 # async def ironman(ctx):
 #     ongoing = True
@@ -163,7 +177,8 @@ async def help(ctx):
                   "`  !larrydrip` *Larry Drip*\n" \
                   "`    !larry33` *Larry 33rd*\n" \
                   "`!larryfinger` *Larry Finger*\n" \
-                  "`     !random` *Random character*"
+                  "`     !random` *Random character*\n" \
+                  "`      !judge` *Random judge*"
     embed.add_field(name="Image Commands", value=image_value)
 
     await ctx.channel.send(embed=embed)

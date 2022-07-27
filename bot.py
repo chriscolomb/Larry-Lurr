@@ -3,6 +3,7 @@ import random as r
 from nextcord.ext import commands
 
 bot = commands.Bot(command_prefix="!", help_command=None)
+judge_dictionary = {}
 
 
 @bot.event
@@ -111,8 +112,16 @@ async def judge(ctx):
     """
     Random judge image
     """
+    user_id = ctx.author.id
+    judge_number = r.randint(1, 9)
+    if user_id not in judge_dictionary.keys():
+        judge_dictionary[user_id] = judge_number
+    else:
+        while judge_dictionary.get(user_id) == judge_number:
+            judge_number = r.randint(1, 9)
+        judge_dictionary[user_id] = judge_number
 
-    judge_image = "https://github.com/chriscolomb/ssbu/raw/master/judge/judge_" + str(r.randint(1, 9)) + ".png"
+    judge_image = "https://github.com/chriscolomb/ssbu/raw/master/judge/judge_" + str(judge_number) + ".png"
 
     embed = nextcord.Embed()
     embed.set_image(url=judge_image)

@@ -70,9 +70,9 @@ def larry_command(embed):
     embed.set_image(url=larry_image)
     message_embed_color(embed)
 
-    print(fake_commands_collection.find({"_id":"larry"}))
-    for id in fake_commands_collection.find():
-        if id["_id"] == user.id:
+    # print(fake_commands_collection.find({"_id":"larry"}))
+    # for id in fake_commands_collection.find():
+    #     if id["_id"] == user.id:
 
     # command_query = {
     #     "_id": "larry",

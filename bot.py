@@ -1,5 +1,5 @@
 import nextcord
-import pymongo
+# import pymongo
 import random as r
 from nextcord.ext import commands
 

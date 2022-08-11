@@ -1,8 +1,16 @@
 import nextcord
+import pymongo
 import random as r
 from nextcord.ext import commands
 
 bot = commands.Bot(command_prefix="!", help_command=None)
+
+# connect to MongoDB
+# cluster = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-cluster.rzshs.mongodb.net/test")
+# larry_lurr_db = cluster["Larry-Lurr"]
+# commands_collection = larry_lurr_db["Commands"]
+# fake_commands_collection = larry_lurr_db["Fake-Commands"]
+
 judge_dictionary = {}
 
 
@@ -10,6 +18,40 @@ judge_dictionary = {}
 async def on_ready():
     game = nextcord.Game("!help")
     await bot.change_presence(activity=game)
+
+
+# @bot.command()
+# async def updatedb(ctx):
+#     larry_entry = {
+#         "_id": "larry",
+#         "count": 0
+#     }
+#     larryfinger_entry = {
+#         "_id": "larryfinger",
+#         "count": 0
+#     }
+#     larry33_entry = {
+#         "_id": "larry33",
+#         "count": 0
+#     }
+#     larrydrip_entry = {
+#         "_id": "larrydrip",
+#         "count": 0
+#     }
+#     random_entry = {
+#         "_id": "random",
+#         "count": 0
+#     }
+#     judge_entry = {
+#         "_id": "judge",
+#         "count": 0
+#     }
+#     fake_commands_collection.insert_one(larry_entry)
+#     fake_commands_collection.insert_one(larry33_entry)
+#     fake_commands_collection.insert_one(larrydrip_entry)
+#     fake_commands_collection.insert_one(larryfinger_entry)
+#     fake_commands_collection.insert_one(random_entry)
+#     fake_commands_collection.insert_one(judge_entry)
 
 
 def message_embed_color(embed):
@@ -23,10 +65,24 @@ def message_embed_color(embed):
 
 
 def larry_command(embed):
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 65)) + ".png"
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
 
     embed.set_image(url=larry_image)
     message_embed_color(embed)
+
+    print(fake_commands_collection.find({"_id":"larry"}))
+    for id in fake_commands_collection.find():
+        if id["_id"] == user.id:
+
+    # command_query = {
+    #     "_id": "larry",
+    # }
+    # new_command = {
+    #     "$set": {
+    #         "count":
+    #     }
+    # }
+    # fake_commands_collection.update_one(command_query, new_command)
 
 
 @bot.command()
@@ -34,7 +90,6 @@ async def larry(ctx):
     """
     Random Larry image
     """
-
     embed = nextcord.Embed()
     larry_command(embed)
     await ctx.channel.send(embed=embed)
@@ -45,7 +100,6 @@ async def Larry(ctx):
     """
     Random Larry image
     """
-
     embed = nextcord.Embed()
     larry_command(embed)
     await ctx.channel.send(embed=embed)
@@ -56,7 +110,6 @@ async def larryfinger(ctx):
     """
     Larry Finger image
     """
-
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png"
 
     embed = nextcord.Embed()
@@ -70,7 +123,6 @@ async def larry33(ctx):
     """
     Larry 33rd image
     """
-
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png"
 
     embed = nextcord.Embed()
@@ -84,7 +136,6 @@ async def larrydrip(ctx):
     """
     Larry Drip image
     """
-
     larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
 
     embed = nextcord.Embed()
@@ -98,7 +149,6 @@ async def random(ctx):
     """
     Random character image
     """
-
     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
 
     embed = nextcord.Embed()

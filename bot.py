@@ -240,6 +240,8 @@ async def help(ctx):
                   "`      !judge` *Random judge*"
     embed.add_field(name="Image Commands", value=image_value)
 
+    embed.set_footer(text="Contact TeamDuck#0876 for questions or requests.", icon_url="https://github.com/chriscolomb/ssbu/blob/master/larry/question.png?raw=true")
+
     await ctx.channel.send(embed=embed)
 
 

@@ -65,7 +65,7 @@ def message_embed_color(embed):
 
 
 def larry_command(embed):
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
+    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 65)) + ".png"
 
     embed.set_image(url=larry_image)
     message_embed_color(embed)

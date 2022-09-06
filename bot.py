@@ -149,7 +149,7 @@ async def random(ctx):
     """
     Random character image
     """
-    random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
+    random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 670)) + ".png"
 
     embed = nextcord.Embed()
     embed.set_image(url=random_image)

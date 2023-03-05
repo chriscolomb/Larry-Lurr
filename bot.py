@@ -156,6 +156,18 @@ async def random(ctx):
     message_embed_color(embed)
     await ctx.channel.send(embed=embed)
 
+@bot.command()
+async def ridley(ctx):
+    """
+    Random Ridley portrait image
+    """
+    ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
+
+    embed = nextcord.Embed()
+    embed.set_image(url=ridley_image)
+    message_embed_color(embed)
+    await ctx.channel.send(embed=embed)
+
 
 @bot.command()
 async def judge(ctx):
@@ -237,6 +249,7 @@ async def help(ctx):
                   "`    !larry33` *Larry 33rd*\n" \
                   "`!larryfinger` *Larry Finger*\n" \
                   "`     !random` *Random character*\n" \
+                  "`     !ridley` *Random Ridley*\n" \
                   "`      !judge` *Random judge*"
     embed.add_field(name="Image Commands", value=image_value)
 

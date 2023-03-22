@@ -1,57 +1,26 @@
 import nextcord
-# import pymongo
 import random as r
+from nextcord import Interaction, SlashOption
+# from nextcord.abc import GuildChannel
 from nextcord.ext import commands
+from typing import Optional
+from graphql import getTop8
 
-bot = commands.Bot(command_prefix="!", help_command=None)
 
-# connect to MongoDB
-# cluster = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-cluster.rzshs.mongodb.net/test")
-# larry_lurr_db = cluster["Larry-Lurr"]
-# commands_collection = larry_lurr_db["Commands"]
-# fake_commands_collection = larry_lurr_db["Fake-Commands"]
+intents = nextcord.Intents.default()
+intents.message_content = True
+# intents.members = True
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
 
 judge_dictionary = {}
 
 
 @bot.event
 async def on_ready():
-    game = nextcord.Game("!help")
+    game = nextcord.Game("SSBU")
     await bot.change_presence(activity=game)
-
-
-# @bot.command()
-# async def updatedb(ctx):
-#     larry_entry = {
-#         "_id": "larry",
-#         "count": 0
-#     }
-#     larryfinger_entry = {
-#         "_id": "larryfinger",
-#         "count": 0
-#     }
-#     larry33_entry = {
-#         "_id": "larry33",
-#         "count": 0
-#     }
-#     larrydrip_entry = {
-#         "_id": "larrydrip",
-#         "count": 0
-#     }
-#     random_entry = {
-#         "_id": "random",
-#         "count": 0
-#     }
-#     judge_entry = {
-#         "_id": "judge",
-#         "count": 0
-#     }
-#     fake_commands_collection.insert_one(larry_entry)
-#     fake_commands_collection.insert_one(larry33_entry)
-#     fake_commands_collection.insert_one(larrydrip_entry)
-#     fake_commands_collection.insert_one(larryfinger_entry)
-#     fake_commands_collection.insert_one(random_entry)
-#     fake_commands_collection.insert_one(judge_entry)
 
 
 def message_embed_color(embed):
@@ -64,117 +33,46 @@ def message_embed_color(embed):
         embed.colour = nextcord.Colour.from_rgb(154, 38, 38)
 
 
-def larry_command(embed):
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
+@bot.slash_command(name="larry", description="Larry image")
+async def larry(interaction: Interaction, image: str = SlashOption(choices={
+    "random": "random",
+    "finger": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png",
+    "33": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png",
+    "drip": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
+    }, description="Choose image type")):
 
-    embed.set_image(url=larry_image)
+    if image == "random":
+        image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
+    
+    embed = nextcord.Embed()    
+    embed.set_image(url=image)
     message_embed_color(embed)
-
-    # print(fake_commands_collection.find({"_id":"larry"}))
-    # for id in fake_commands_collection.find():
-    #     if id["_id"] == user.id:
-
-    # command_query = {
-    #     "_id": "larry",
-    # }
-    # new_command = {
-    #     "$set": {
-    #         "count":
-    #     }
-    # }
-    # fake_commands_collection.update_one(command_query, new_command)
+    await interaction.response.send_message(embed=embed)
 
 
-@bot.command()
-async def larry(ctx):
-    """
-    Random Larry image
-    """
-    embed = nextcord.Embed()
-    larry_command(embed)
-    await ctx.channel.send(embed=embed)
-
-
-@bot.command()
-async def Larry(ctx):
-    """
-    Random Larry image
-    """
-    embed = nextcord.Embed()
-    larry_command(embed)
-    await ctx.channel.send(embed=embed)
-
-
-@bot.command()
-async def larryfinger(ctx):
-    """
-    Larry Finger image
-    """
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png"
-
-    embed = nextcord.Embed()
-    embed.set_image(url=larry_image)
-    message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
-
-
-@bot.command()
-async def larry33(ctx):
-    """
-    Larry 33rd image
-    """
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png"
-
-    embed = nextcord.Embed()
-    embed.set_image(url=larry_image)
-    message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
-
-
-@bot.command()
-async def larrydrip(ctx):
-    """
-    Larry Drip image
-    """
-    larry_image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
-
-    embed = nextcord.Embed()
-    embed.set_image(url=larry_image)
-    message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
-
-
-@bot.command()
-async def random(ctx):
-    """
-    Random character image
-    """
+@bot.slash_command(name="random", description="Random character portrait")
+async def random(interaction: Interaction):
     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 670)) + ".png"
 
     embed = nextcord.Embed()
     embed.set_image(url=random_image)
     message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed)
 
-@bot.command()
-async def ridley(ctx):
-    """
-    Random Ridley portrait image
-    """
+
+@bot.slash_command(name="ridley", description="Random Ridley portrait")
+async def ridley(interaction: Interaction):
     ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
 
     embed = nextcord.Embed()
     embed.set_image(url=ridley_image)
     message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed)
 
 
-@bot.command()
-async def judge(ctx):
-    """
-    Random judge image
-    """
-    user_id = ctx.author.id
+@bot.slash_command(name="judge", description="Random judge (cannot get the same number twice in a row)")
+async def judge(interaction: Interaction):
+    user_id = interaction.user.id
     judge_number = r.randint(1, 9)
     if user_id not in judge_dictionary.keys():
         judge_dictionary[user_id] = judge_number
@@ -188,74 +86,123 @@ async def judge(ctx):
     embed = nextcord.Embed()
     embed.set_image(url=judge_image)
     message_embed_color(embed)
-    await ctx.channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed)
 
 
-# @bot.command()
-# async def ironman(ctx):
-#     ongoing = True
-#     percentage = 0
-#     characters_left = 86
-#     while ongoing:
-#         embed = nextcord.Embed(title="Ironman Challenge")
-#         percentage_field = str(percentage/100) + "% Complete"
-#         embed.add_field(name=percentage_field, value="Next Character:")
-#         random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
-#         embed.set_image(url=random_image)
-#         footer_text = str(characters_left) + " Characters Left!"
-#         embed.set_footer(text=footer_text)
-#         characters_left -= 1
-#         # buttons = ()
-#         ongoing = False
-#     # await ctx.channel.send(embed=embed, view=buttons)
-#     await ctx.channel.send(embed=embed)
+@bot.slash_command(name="top8", description="Top 8 generator")
+async def top8(interaction: Interaction, event: Optional[str] = SlashOption(required=True, description="Event URL (https://start.gg/tournament/.../event/...)"), graphic: Optional[str] = SlashOption(required=False, description="Image URL for Top 8 graphic")):
+    split = event.split('/')
 
-# @bot.command()
-# async def CB(ctx, user: nextcord.Member, size):
-#     channel = bot.get_channel(ctx.channel.id)
-#     guild_id = ctx.message.guild.id
-#     server = bot.get_guild(guild_id)
-#     p1_username = str(server.get_member(ctx.author.id))
-#     p2_username = str(server.get_member(user.id))
-#
-#     # Error handling
-#     if user.id == ctx.author.id:
-#         embed = nextcord.Embed(
-#                 title="You cannot initiate a Crew Battle with yourself."
-#         )
-#         message_embed_color(embed)
-#         await ctx.channel.send(embed=embed)
-#         return None
-#     elif channel.type == nextcord.ChannelType.public_thread:
-#         embed = nextcord.Embed(
-#             title="Cannot do `!CB` command within a thread!"
-#         )
-#         message_embed_color(embed)
-#         await ctx.channel.send(embed=embed)
-#         return None
-#
-#     await ctx.channel.send("1v1 is size " + str(size))
+    for i in range(len(split)):
+        if split[i] == "tournament":
+            tournament = split[i+1]
+        elif split[i] == "event":
+            if split[i+1]:
+                event = split[i+1]
+    
+    embed = nextcord.Embed()
+        
+    if tournament and event:
+        top8_info = getTop8(tournament, event)
+        if len(top8_info) == 0:
+            embed = nextcord.Embed(
+                title = "Error: Incorrectly formatted event URL",
+                description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
+            )
+        elif top8_info[2] < 8:
+            embed = nextcord.Embed(
+                title = "Error: 8 or more entrants are required"
+            )
+        else:
+            embed = nextcord.Embed(
+                title = top8_info[0] + " - " + top8_info[1],
+                url = "https://start.gg/tournament/" + tournament + "/event/" + event 
+            )
+            top8 = "> `1st` " + top8_info[4][0] + "\n" \
+                    "> `2nd` " + top8_info[4][1] + "\n" \
+                    "> `3rd` " + top8_info[4][2] + "\n" \
+                    "> `4th` " + top8_info[4][3] + "\n" \
+                    "> `5th` " + top8_info[4][4] + "\n" \
+                    "> `5th` " + top8_info[4][5] + "\n" \
+                    "> `7th` " + top8_info[4][6] + "\n" \
+                    "> `7th` " + top8_info[4][7] + "\n"
+            embed.add_field(name="Top 8 - " + str(top8_info[2]) + " Participants", value=top8)
+            embed.set_footer(text=top8_info[3])
+            if graphic:
+                embed.set_image(url=graphic)
+    else:
+        embed = nextcord.Embed(
+            title = "Error: Incorrectly formatted event URL",
+            description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
+        )
 
+    # embed = nextcord.Embed(
+    #     title = "Stitchface #123 - Ultimate Singles",
+    #     url = event,
+    #     # description = "**Friday, March 23, 2023**\n",
+    # )
+    # top_8 = "> `1st`  TeamDuck\n" \
+    #         "> `2nd`  Machu\n" \
+    #         "> `3rd`  Machu\n" \
+    #         "> `4th`  Machu\n" \
+    #         "> `5th`  Machu\n" \
+    #         "> `5th`  Machu\n" \
+    #         "> `7th`  Machu\n" \
+    #         "> `7th`  Machu"
+    # embed.add_field(name="Top 8 - 100 Participants", value=top_8)
+    # embed.set_footer(text="Friday, March 23, 2023")
 
-@bot.command()
-async def help(ctx):
-    embed = nextcord.Embed(
-        title="Help"
-    )
+    
     message_embed_color(embed)
+    await interaction.response.send_message(embed=embed)
 
-    image_value = "`      !larry` *Random Larry*\n" \
-                  "`  !larrydrip` *Larry Drip*\n" \
-                  "`    !larry33` *Larry 33rd*\n" \
-                  "`!larryfinger` *Larry Finger*\n" \
-                  "`     !random` *Random character*\n" \
-                  "`     !ridley` *Random Ridley*\n" \
-                  "`      !judge` *Random judge*"
-    embed.add_field(name="Image Commands", value=image_value)
+    
 
-    embed.set_footer(text="Contact TeamDuck#0876 for questions or requests.", icon_url="https://github.com/chriscolomb/ssbu/blob/master/larry/question.png?raw=true")
 
-    await ctx.channel.send(embed=embed)
+# # @bot.command()
+# # async def ironman(ctx):
+# #     ongoing = True
+# #     percentage = 0
+# #     characters_left = 86
+# #     while ongoing:
+# #         embed = nextcord.Embed(title="Ironman Challenge")
+# #         percentage_field = str(percentage/100) + "% Complete"
+# #         embed.add_field(name=percentage_field, value="Next Character:")
+# #         random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
+# #         embed.set_image(url=random_image)
+# #         footer_text = str(characters_left) + " Characters Left!"
+# #         embed.set_footer(text=footer_text)
+# #         characters_left -= 1
+# #         # buttons = ()
+# #         ongoing = False
+# #     # await ctx.channel.send(embed=embed, view=buttons)
+# #     await ctx.channel.send(embed=embed)
+
+# # @bot.command()
+# # async def CB(ctx, user: nextcord.Member, size):
+# #     channel = bot.get_channel(ctx.channel.id)
+# #     guild_id = ctx.message.guild.id
+# #     server = bot.get_guild(guild_id)
+# #     p1_username = str(server.get_member(ctx.author.id))
+# #     p2_username = str(server.get_member(user.id))
+
+# #     # Error handling
+# #     if user.id == ctx.author.id:
+# #         embed = nextcord.Embed(
+# #                 title="You cannot initiate a Crew Battle with yourself."
+# #         )
+# #         message_embed_color(embed)
+# #         await ctx.channel.send(embed=embed)
+# #         return None
+# #     elif channel.type == nextcord.ChannelType.public_thread:
+# #         embed = nextcord.Embed(
+# #             title="Cannot do `!CB` command within a thread!"
+# #         )
+# #         message_embed_color(embed)
+# #         await ctx.channel.send(embed=embed)
+# #         return None
+
+# #     await ctx.channel.send("1v1 is size " + str(size))
 
 
 bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0')  # Test

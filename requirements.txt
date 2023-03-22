@@ -1,1 +1,2 @@
-nextcord==2.0.0a4
+graphqlclient==0.2.4
+nextcord==2.4.1

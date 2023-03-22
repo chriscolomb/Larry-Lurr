@@ -51,10 +51,12 @@ async def larry(interaction: Interaction, image: str = SlashOption(choices={
 
 
 @bot.slash_command(name="random", description="Random character portrait")
-async def random(interaction: Interaction):
+async def random(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 670)) + ".png"
 
-    embed = nextcord.Embed()
+    embed = nextcord.Embed(
+        title=message
+    )
     embed.set_image(url=random_image)
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)

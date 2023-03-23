@@ -9,7 +9,7 @@ from graphql import getTop8
 
 intents = nextcord.Intents.default()
 intents.message_content = True
-# intents.members = True
+intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -116,20 +116,49 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
                 title = "Error: 8 or more entrants are required"
             )
         else:
+            server_members = interaction.user.guild.fetch_members()
+            member_strings = []
+
+            async for member in server_members:
+                member_strings.append([str(member), member.mention])
+
+            for top8er in top8_info[4]:
+                for member in member_strings:    
+                    if member[0] == top8er[1]:
+                        top8er[1] = member[1]
+
+                if top8er[1]:
+                    if top8er[1][:2] != "<@":
+                        top8er[1] = ""
+
             embed = nextcord.Embed(
                 title = top8_info[0] + " - " + top8_info[1],
                 url = "https://start.gg/tournament/" + tournament + "/event/" + event 
             )
-            top8 = "> `1st` " + top8_info[4][0] + "\n" \
-                    "> `2nd` " + top8_info[4][1] + "\n" \
-                    "> `3rd` " + top8_info[4][2] + "\n" \
-                    "> `4th` " + top8_info[4][3] + "\n" \
-                    "> `5th` " + top8_info[4][4] + "\n" \
-                    "> `5th` " + top8_info[4][5] + "\n" \
-                    "> `7th` " + top8_info[4][6] + "\n" \
-                    "> `7th` " + top8_info[4][7] + "\n"
+            
+            top8 = ""
+            for i in range(len(top8_info[4])):
+                if i == 0:
+                    top8 = top8 + "> `1st` "
+                elif i == 1:
+                    top8 = top8 + "> `2nd` "
+                elif i == 2:
+                    top8 = top8 + "> `3rd` "
+                elif i == 3:
+                    top8 = top8 + "> `4th` "
+                elif i == 4 or i == 5:
+                    top8 = top8 + "> `5th` "
+                else:
+                    top8 = top8 + "> `7th` "
+
+                if top8_info[4][i][1]:
+                    top8 = top8 + top8_info[4][i][1] + "\n"
+                else:
+                    top8 = top8 + top8_info[4][i][0] + "\n"
+
             embed.add_field(name="Top 8 - " + str(top8_info[2]) + " Participants", value=top8)
             embed.set_footer(text=top8_info[3])
+
             if graphic:
                 embed.set_image(url=graphic)
     else:
@@ -137,23 +166,6 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
             title = "Error: Incorrectly formatted event URL",
             description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
         )
-
-    # embed = nextcord.Embed(
-    #     title = "Stitchface #123 - Ultimate Singles",
-    #     url = event,
-    #     # description = "**Friday, March 23, 2023**\n",
-    # )
-    # top_8 = "> `1st`  TeamDuck\n" \
-    #         "> `2nd`  Machu\n" \
-    #         "> `3rd`  Machu\n" \
-    #         "> `4th`  Machu\n" \
-    #         "> `5th`  Machu\n" \
-    #         "> `5th`  Machu\n" \
-    #         "> `7th`  Machu\n" \
-    #         "> `7th`  Machu"
-    # embed.add_field(name="Top 8 - 100 Participants", value=top_8)
-    # embed.set_footer(text="Friday, March 23, 2023")
-
     
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
@@ -207,5 +219,7 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
 # #     await ctx.channel.send("1v1 is size " + str(size))
 
 
-bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
+# bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
+bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0')  # Test
+
 # refresh repo

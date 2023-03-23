@@ -27,15 +27,15 @@ def getTop8(tournament, event):
                     placement
                     entrant {
                     name
-                    # participants {
-                    #     player {
-                    #     user {
-                    #         authorizations(types: [DISCORD]) {
-                    #             externalUsername
-                    #         }
-                    #     }
-                    #     }
-                    # }
+                    participants {
+                        player {
+                        user {
+                            authorizations(types: [DISCORD]) {
+                                externalUsername
+                            }
+                        }
+                        }
+                    }
                     }
                 }
                 }
@@ -49,9 +49,9 @@ def getTop8(tournament, event):
         }
     )
     parsed = json.loads(top8)
+    # print(parsed)
 
     if not parsed["data"]["event"]:
-        # errors = parsed["errors"]
         return ()
     else:
         tournament_name = parsed["data"]["event"]["tournament"]["name"]
@@ -64,13 +64,11 @@ def getTop8(tournament, event):
 
         entrant_names = []
         for e in entrants:
-            entrant_names.append(e["entrant"]["name"])
+            discord = e["entrant"]["participants"][0]["player"]["user"]["authorizations"]
+            if discord:
+                entrant_names.append([e["entrant"]["name"], discord[0]["externalUsername"]])
+            else: 
+                entrant_names.append([e["entrant"]["name"], ""])
         
         return tournament_name, event_name, event_numEntrants, event_date, entrant_names
 
-# if 'errors' in resData:
-#     print('Error:')
-#     print(resData['errors'])
-# else:
-#     print('Success!')
-#     print(resData)

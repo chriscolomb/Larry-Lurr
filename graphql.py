@@ -33,15 +33,15 @@ def getTop8(tournament, event):
                     placement
                     entrant {
                     name
-                    # participants {
-                    #     player {
-                    #     user {
-                    #         authorizations(types: [DISCORD]) {
-                    #             externalUsername
-                    #         }
-                    #     }
-                    #     }
-                    # }
+                    participants {
+                        player {
+                        user {
+                            authorizations(types: [DISCORD]) {
+                                externalUsername
+                            }
+                        }
+                        }
+                    }
                     }
                 }
                 }

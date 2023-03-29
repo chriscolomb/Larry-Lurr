@@ -162,6 +162,22 @@ def getSeeding(tournament, event):
                     seeding.append([e["entrant"]["initialSeedNum"], e["entrant"]["name"]])
     return seeding
 
-# print(getTop8("uvic-fight-club-22", "ultimate-singles"))
-# print(getSeeding("uvic-fight-club-22", "ultimate-singles"))
-# print(getSeeding("major-upset", "ultimate-singles-7500-prize-pool"))
+
+# ----- TESTING -----
+event = "https://www.start.gg/tournament/the-coinbox-55-ultimate-steve-banned/event/ultimate-singles"
+split = event.split('/')
+
+for i in range(len(split)):
+    if split[i] == "tournament":
+        tournament = split[i+1]
+    elif split[i] == "event":
+        if split[i+1]:
+            event = split[i+1]
+
+top8 = getTop8(tournament, event)
+for item in top8:
+    print(item)
+
+seeding = getSeeding(tournament, event)
+for seed in seeding:
+    print(seed)

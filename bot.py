@@ -9,7 +9,9 @@ from graphql import getTop8
 
 intents = nextcord.Intents.default()
 intents.message_content = True
-intents.members = True
+
+# ENABLE WHEN MENTIONS APPROVED
+# intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -39,12 +41,14 @@ async def larry(interaction: Interaction, image: str = SlashOption(choices={
     "finger": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_11.png",
     "33": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_51.png",
     "drip": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
-    }, description="Choose image type")):
+    }, description="Choose image type"), message: Optional[str] = SlashOption(required=False, description="Image title")):
 
     if image == "random":
         image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
     
-    embed = nextcord.Embed()    
+    embed = nextcord.Embed(
+        title = message
+    )    
     embed.set_image(url=image)
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
@@ -55,7 +59,7 @@ async def random(interaction: Interaction, message: Optional[str] = SlashOption(
     random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 670)) + ".png"
 
     embed = nextcord.Embed(
-        title=message
+        title = message
     )
     embed.set_image(url=random_image)
     message_embed_color(embed)
@@ -63,17 +67,19 @@ async def random(interaction: Interaction, message: Optional[str] = SlashOption(
 
 
 @bot.slash_command(name="ridley", description="Random Ridley portrait")
-async def ridley(interaction: Interaction):
+async def ridley(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
     ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
 
-    embed = nextcord.Embed()
+    embed = nextcord.Embed(
+        title = message
+    )
     embed.set_image(url=ridley_image)
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
 
 
 @bot.slash_command(name="judge", description="Random judge (cannot get the same number twice in a row)")
-async def judge(interaction: Interaction):
+async def judge(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
     user_id = interaction.user.id
     judge_number = r.randint(1, 9)
     if user_id not in judge_dictionary.keys():
@@ -85,7 +91,9 @@ async def judge(interaction: Interaction):
 
     judge_image = "https://github.com/chriscolomb/ssbu/raw/master/judge/judge_" + str(judge_number) + ".png"
 
-    embed = nextcord.Embed()
+    embed = nextcord.Embed(
+        title = message
+    )
     embed.set_image(url=judge_image)
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
@@ -116,20 +124,23 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
                 title = "Error: 8 or more entrants are required"
             )
         else:
-            server_members = interaction.user.guild.fetch_members()
-            member_strings = []
+            # ENABLE WHEN MENTIONS APPROVED
+            # -----------------------------
+            # server_members = interaction.user.guild.fetch_members()
+            # member_strings = []
 
-            async for member in server_members:
-                member_strings.append([str(member), member.mention])
+            # async for member in server_members:
+            #     member_strings.append([str(member), member.mention])
 
-            for top8er in top8_info[4]:
-                for member in member_strings:    
-                    if member[0] == top8er[1]:
-                        top8er[1] = member[1]
+            # for top8er in top8_info[4]:
+            #     for member in member_strings:    
+            #         if member[0] == top8er[1]:
+            #             top8er[1] = member[1]
 
-                if top8er[1]:
-                    if top8er[1][:2] != "<@":
-                        top8er[1] = ""
+            #     if top8er[1]:
+            #         if top8er[1][:2] != "<@":
+            #             top8er[1] = ""
+            # -----------------------------
 
             embed = nextcord.Embed(
                 title = top8_info[0] + " - " + top8_info[1],
@@ -151,16 +162,24 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
                 else:
                     top8 = top8 + "> `7th` "
 
-                if top8_info[4][i][1]:
-                    top8 = top8 + top8_info[4][i][1] + "\n"
-                else:
-                    top8 = top8 + top8_info[4][i][0] + "\n"
+                # ENABLE WHEN MENTIONS APPROVED
+                # -----------------------------
+                # if top8_info[4][i][1]:
+                #     top8 = top8 + top8_info[4][i][1] + "\n"
+                # else:
+                #     top8 = top8 + top8_info[4][i][0] + "\n"
+                # -----------------------------
+                
+                # DISABLE WHEN MENTIONS APPROVED
+                top8 = top8 + top8_info[4][i][0] + "\n"
 
             embed.add_field(name="Top 8 - " + str(top8_info[2]) + " Participants", value=top8)
             embed.set_footer(text=top8_info[3])
 
             if graphic:
                 embed.set_image(url=graphic)
+            else:
+                embed.set_image(url=top8_info[5])
     else:
         embed = nextcord.Embed(
             title = "Error: Incorrectly formatted event URL",

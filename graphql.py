@@ -98,9 +98,15 @@ def getSeeding(tournament, event):
             event(slug: $eventSlug) {
                 tournament {
                     name
+                    timezone
+                    images {
+                        url
+                        ratio
+                    }
                 }
                 name
                 numEntrants
+                startAt
                 phases {
                     id
                 }
@@ -119,7 +125,23 @@ def getSeeding(tournament, event):
         phaseID = phases_parsed["data"]["event"]["phases"][0]["id"]
         numEntrants = phases_parsed["data"]["event"]["numEntrants"]
 
-        # print(phaseID)
+        tournament_name = phases_parsed["data"]["event"]["tournament"]["name"]
+        tournament_tz = phases_parsed["data"]["event"]["tournament"]["timezone"]
+        event_name = phases_parsed["data"]["event"]["name"]
+        event_timestamp = phases_parsed["data"]["event"]["startAt"]
+        images = phases_parsed["data"]["event"]["tournament"]["images"]
+
+        if tournament_tz == None:
+            event_date = dt.datetime.fromtimestamp(event_timestamp).strftime("%A, %B %-d, %Y")
+        else:
+            event_date = dt.datetime.fromtimestamp(event_timestamp).astimezone(pytz.timezone(tournament_tz)).strftime("%A, %B %-d, %Y")
+        
+        image = ""
+        for i in images:
+            if i["ratio"] > 1:
+                image = i["url"]
+                break
+            image = i["url"]
 
         i = 0
         page = 1
@@ -160,24 +182,29 @@ def getSeeding(tournament, event):
                 # print(entrants)
                 for e in sorted_entrants:
                     seeding.append([e["entrant"]["initialSeedNum"], e["entrant"]["name"]])
-    return seeding
+    
+    return tournament_name, event_name, numEntrants, event_date, seeding, image
 
 
 # ----- TESTING -----
-event = "https://www.start.gg/tournament/the-coinbox-55-ultimate-steve-banned/event/ultimate-singles"
-split = event.split('/')
+# event = "https://www.start.gg/tournament/major-upset/event/ganon-gauntlet-1000-prize-pool"
+# split = event.split('/')
 
-for i in range(len(split)):
-    if split[i] == "tournament":
-        tournament = split[i+1]
-    elif split[i] == "event":
-        if split[i+1]:
-            event = split[i+1]
+# for i in range(len(split)):
+#     if split[i] == "tournament":
+#         tournament = split[i+1]
+#     elif split[i] == "event":
+#         if split[i+1]:
+#             event = split[i+1]
 
-top8 = getTop8(tournament, event)
-for item in top8:
-    print(item)
+# top8 = getTop8(tournament, event)
+# for item in top8:
+#     print(item)
 
-seeding = getSeeding(tournament, event)
-for seed in seeding:
-    print(seed)
+# seeding = getSeeding(tournament, event)
+# print(seeding[0])
+# print(seeding[1])
+# print(seeding[2])
+# print(seeding[3])
+# for seed in seeding[4]:
+#     print(seed)

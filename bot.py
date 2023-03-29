@@ -4,7 +4,7 @@ from nextcord import Interaction, SlashOption
 # from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 from typing import Optional
-from graphql import getTop8
+from graphql import getTop8, getSeeding
 
 
 intents = nextcord.Intents.default()
@@ -184,28 +184,67 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
             title = "Error: Incorrectly formatted event URL",
             description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
         )
-
-    # embed = nextcord.Embed(
-    #     title = "Stitchface #123 - Ultimate Singles",
-    #     url = event,
-    #     # description = "**Friday, March 23, 2023**\n",
-    # )
-    # top_8 = "> `1st`  TeamDuck\n" \
-    #         "> `2nd`  Machu\n" \
-    #         "> `3rd`  Machu\n" \
-    #         "> `4th`  Machu\n" \
-    #         "> `5th`  Machu\n" \
-    #         "> `5th`  Machu\n" \
-    #         "> `7th`  Machu\n" \
-    #         "> `7th`  Machu"
-    # embed.add_field(name="Top 8 - 100 Participants", value=top_8)
-    # embed.set_footer(text="Friday, March 23, 2023")
-
     
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
 
+
+@bot.slash_command(name="seeding", description="Seeding for an event")
+async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(required=True, description="Event URL (https://start.gg/tournament/.../event/...)")):
+    split = event.split('/')
+
+    for i in range(len(split)):
+        if split[i] == "tournament":
+            tournament = split[i+1]
+        elif split[i] == "event":
+            if split[i+1]:
+                event = split[i+1]
     
+    embed = nextcord.Embed()
+        
+    if tournament and event:
+        seeding = getSeeding(tournament, event)
+        if len(seeding[4]) == 0:
+            embed = nextcord.Embed(
+                title = "Error: Bracket is not published",
+                description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
+            )
+        else:
+            embeds = []
+            
+            embed = nextcord.Embed(
+                title = seeding[0] + " - " + seeding[1],
+                url = "https://start.gg/tournament/" + tournament + "/event/" + event 
+            )
+
+            seeding_message = ""
+
+            if seeding[2] >= 1000:
+                for player in seeding[4]:
+                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>4}' + "` " + player[1] + "\n"
+            elif seeding[2] >= 100:
+                for player in seeding[4]:
+                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>3}' + "` " + player[1] + "\n"
+            elif seeding[2] >= 10:
+                for player in seeding[4]:
+                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>2}' + "` " + player[1] + "\n"
+            else:
+                for player in seeding[4]:
+                    seeding_message = seeding_message + "> `" + str(player[0]) + "` " + player[1] + "\n"
+            
+            embed.add_field(name="Seeding - " + str(seeding[2]) + " Participants", value=seeding_message)
+            embed.set_footer(text=seeding[3])
+            embed.set_image(url=seeding[5])
+            
+    else:
+        embed = nextcord.Embed(
+            title = "Error: Incorrectly formatted event URL",
+            description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
+        )
+    
+    message_embed_color(embed)
+    await interaction.response.send_message(embed=embed)
+
 
 
 # # @bot.command()

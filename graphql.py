@@ -120,7 +120,9 @@ def getSeeding(tournament, event):
     phases_parsed = json.loads(phases)
     
     if not phases_parsed["data"]["event"]:
-        return ()
+        return []
+    elif not phases_parsed["data"]["event"]["phases"]:
+        return ("", "", "", "", [])
     else:
         phaseID = phases_parsed["data"]["event"]["phases"][0]["id"]
         numEntrants = phases_parsed["data"]["event"]["numEntrants"]
@@ -177,17 +179,18 @@ def getSeeding(tournament, event):
                 page = page + 1
 
                 entrants = seeding_parsed["data"]["phase"]["seeds"]["nodes"]
-                sorted_entrants = sorted(entrants, key=lambda seed: seed["entrant"]["initialSeedNum"])
 
                 # print(entrants)
-                for e in sorted_entrants:
+                for e in entrants:
                     seeding.append([e["entrant"]["initialSeedNum"], e["entrant"]["name"]])
+        
+    seeding.sort(key=lambda x: x[0])
     
     return tournament_name, event_name, numEntrants, event_date, seeding, image
 
 
 # ----- TESTING -----
-# event = "https://www.start.gg/tournament/major-upset/event/ganon-gauntlet-1000-prize-pool"
+# event = "https://www.start.gg/tournament/the-coinbox-55-ultimate-steve-banned/event/ultimate-singles"
 # split = event.split('/')
 
 # for i in range(len(split)):

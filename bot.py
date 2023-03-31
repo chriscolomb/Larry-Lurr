@@ -1,6 +1,6 @@
 import nextcord
 import random as r
-from nextcord import Interaction, SlashOption
+from nextcord import Interaction, InteractionMessage, SlashOption
 # from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 from typing import Optional
@@ -201,40 +201,94 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
                 event = split[i+1]
     
     embed = nextcord.Embed()
+
+    await interaction.response.defer()
         
     if tournament and event:
         seeding = getSeeding(tournament, event)
-        if len(seeding[4]) == 0:
+        if len(seeding) == 0:
+            embed = nextcord.Embed(
+                title = "Error: Incorrectly formatted event URL",
+                description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
+            )
+        elif len(seeding[4]) == 0:
             embed = nextcord.Embed(
                 title = "Error: Bracket is not published",
-                description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
             )
         else:
             embeds = []
+
+            for i in range(0, seeding[2], 16):
+                
+
+                embed = nextcord.Embed(
+                    title = seeding[0] + " - " + seeding[1],
+                    url = "https://start.gg/tournament/" + tournament + "/event/" + event 
+                )
+
+                seeding_message = ""
+
+                for i2 in range(16):
+                    if i+i2 >= seeding[2]:
+                        break
+                    else:
+                        if seeding[2] >= 1000:
+                            seeding_message = seeding_message + "> `" + f'{str(seeding[4][i+i2][0]):0>4}' + "` " + seeding[4][i+i2][1] + "\n"
+                        elif seeding[2] >= 100:
+                            seeding_message = seeding_message + "> `" + f'{str(seeding[4][i+i2][0]):0>3}' + "` " + seeding[4][i+i2][1] + "\n"
+                        elif seeding[2] >= 10:
+                            seeding_message = seeding_message + "> `" + f'{str(seeding[4][i+i2][0]):0>2}' + "` " + seeding[4][i+i2][1] + "\n"
+                        else:
+                            seeding_message = seeding_message + "> `" + str(seeding[4][i+i2][0]) + "` " + seeding[4][i+i2][1] + "\n"
+                
+                embed.add_field(name="Seeding - " + str(seeding[2]) + " Participants", value=seeding_message)
+                embed.set_footer(text=seeding[3])
+                embed.set_image(url=seeding[5])
+                # print(seeding_message)
+
+                embeds.append(embed)
             
-            embed = nextcord.Embed(
-                title = seeding[0] + " - " + seeding[1],
-                url = "https://start.gg/tournament/" + tournament + "/event/" + event 
-            )
-
-            seeding_message = ""
-
-            if seeding[2] >= 1000:
-                for player in seeding[4]:
-                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>4}' + "` " + player[1] + "\n"
-            elif seeding[2] >= 100:
-                for player in seeding[4]:
-                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>3}' + "` " + player[1] + "\n"
-            elif seeding[2] >= 10:
-                for player in seeding[4]:
-                    seeding_message = seeding_message + "> `" + f'{str(player[0]):0>2}' + "` " + player[1] + "\n"
+            if len(embeds) == 1:
+                message_embed_color(embed)
+                await interaction.followup.send(embed=embed)
             else:
-                for player in seeding[4]:
-                    seeding_message = seeding_message + "> `" + str(player[0]) + "` " + player[1] + "\n"
-            
-            embed.add_field(name="Seeding - " + str(seeding[2]) + " Participants", value=seeding_message)
-            embed.set_footer(text=seeding[3])
-            embed.set_image(url=seeding[5])
+                cur = 0
+                for i in range(len(embeds)):
+                    message_embed_color(embeds[i])
+                
+                await interaction.followup.send(embed=embeds[cur])
+                message = await interaction.original_message()
+
+                await message.add_reaction('⏪')
+                await message.add_reaction('◀️')
+                await message.add_reaction('▶️')
+                await message.add_reaction('⏩')
+
+                def check(reaction, user):
+                    return user == interaction.user and str(reaction.emoji) in ['⏪', '◀️', '▶️', '⏩']
+
+                while True:
+                    try:
+                        reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        if str(reaction.emoji) == '▶️' and cur < len(embeds) - 1:
+                            cur += 1
+                            await message.edit(embed=embeds[cur])
+                        elif str(reaction.emoji) == '◀️' and cur > 0:
+                            cur -= 1
+                            await message.edit(embed=embeds[cur])
+                        elif str(reaction.emoji) == '⏪':
+                            cur = 0
+                            await message.edit(embed=embeds[cur])
+                        elif str(reaction.emoji) == '⏩':
+                            cur = len(embeds) - 1
+                            await message.edit(embed=embeds[cur])
+                        
+                        await message.remove_reaction(reaction, user)
+                        
+                    except nextcord.NotFound:
+                        break
+
+            return
             
     else:
         embed = nextcord.Embed(
@@ -243,7 +297,7 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
         )
     
     message_embed_color(embed)
-    await interaction.response.send_message(embed=embed)
+    await interaction.followup.send(embed=embed)
 
 
 

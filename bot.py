@@ -242,7 +242,9 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
                             seeding_message = seeding_message + "> `" + str(seeding[4][i+i2][0]) + "` " + seeding[4][i+i2][1] + "\n"
                 
                 embed.add_field(name="Seeding - " + str(seeding[2]) + " Participants", value=seeding_message)
-                embed.set_footer(text=seeding[3] + "\n" + "⬇ Reactions don't work? Use \"/help reactions\"")
+                if seeding[2] > 16:
+                    embed.set_footer(text=seeding[3] + "\n" + "⬇ Reactions don't work? Use \"/help reactions\"")
+                else: embed.set_footer(text=seeding[3])
                 embed.set_image(url=seeding[5])
                 # print(seeding_message)
 

@@ -242,7 +242,7 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
                             seeding_message = seeding_message + "> `" + str(seeding[4][i+i2][0]) + "` " + seeding[4][i+i2][1] + "\n"
                 
                 embed.add_field(name="Seeding - " + str(seeding[2]) + " Participants", value=seeding_message)
-                embed.set_footer(text=seeding[3])
+                embed.set_footer(text=seeding[3] + "\n" + "⬇ Reactions don't work? Use \"/help reactions\"")
                 embed.set_image(url=seeding[5])
                 # print(seeding_message)
 
@@ -300,6 +300,20 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
     await interaction.followup.send(embed=embed)
 
 
+@bot.slash_command(name="help", description="Help with Larry Lurr Bot")
+async def help(interaction: Interaction, option: str = SlashOption(choices={
+    "reactions": "reactions"
+    }, description="Choose help option")):
+    if option == "reactions":
+        title = "If reactions are not working, please run the command again"
+        description = "> - Only the user who used the command can change pages\n> - Reactions expire in 60 seconds of inactivity"
+    
+    embed = nextcord.Embed(
+        title = title,
+        description = description
+    )    
+    message_embed_color(embed)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 # # @bot.command()
 # # async def ironman(ctx):

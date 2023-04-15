@@ -306,14 +306,21 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
 async def help(interaction: Interaction, option: str = SlashOption(choices={
     "reactions": "reactions"
     }, description="Choose help option")):
+
     if option == "reactions":
-        title = "If reactions are not working, please run the command again"
-        description = "> - Only the user who used the command can change pages\n> - Reactions expire in 60 seconds of inactivity"
+        embed = nextcord.Embed(
+            title = "Help with Reactions",
+            description = "Due to timeout, you may need to run the command again"
+        ) 
+        general_description = "> - Only the user who used the command can change pages\n"\
+                        + "> - Reactions expire in 60 seconds of inactivity"
+        permissions_description = "Make sure Larry Lurr Bot has the following permissions:\n"\
+                        + "> - Add Reactions\n"\
+                        + "> - Manage Messages"
+        embed.add_field(name="General", value=general_description)
+        embed.add_field(name="Permissions", value=permissions_description)
     
-    embed = nextcord.Embed(
-        title = title,
-        description = description
-    )    
+       
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 

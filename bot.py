@@ -5,6 +5,7 @@ from nextcord import Interaction, InteractionMessage, SlashOption
 from nextcord.ext import commands
 from typing import Optional
 from graphql import getTop8, getSeeding
+from patreon import getPatrons
 
 
 intents = nextcord.Intents.default()
@@ -323,6 +324,54 @@ async def help(interaction: Interaction, option: str = SlashOption(choices={
        
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+@bot.slash_command(name="patrons", description="See patrons of Larry Lurr Bot")
+async def patrons(interaction: Interaction):
+    patrons = getPatrons()
+    embed = nextcord.Embed(
+        title = "Patrons of Larry Lurr Bot",
+        description = "A special thanks to these patrons for supporting the bot!"
+    )
+    tier_count = 0
+    
+    for tier in patrons:
+        if len(tier) != 0:
+            if tier_count == 0:
+                tier_name = "Commandin' Larry"
+            elif tier_count == 1:
+                tier_name = "Livin' Like Larry"
+            else:
+                tier_name = "Tippin' Larry"
+            
+            tier_patrons = ""
+            for patron in tier:
+                tier_patrons = tier_patrons + "> " + patron + "\n"    
+            embed.add_field(name=tier_name, value=tier_patrons)
+        
+        tier_count += 1
+    
+    embed.set_footer(text="Want to become a patron? Visit the Patreon link in Larry's bio!")
+    embed.set_thumbnail(url="https://github.com/chriscolomb/ssbu/raw/master/larry/patreon_logo.png")
+
+    message_embed_color(embed)
+    await interaction.response.send_message(embed=embed)
+
+# @bot.slash_command(name="edit", description="Edit Larry's message")
+# async def edit(interaction: Interaction, option: str = SlashOption(choices = {"graphic": "graphic"}, description="Choose edit option")):
+#     # get the message object by ID
+#     message = await ctx.channel.fetch_message(message_id)
+    
+#     # modify the image in the embed
+#     embed = message.embeds[0]  # assuming there's only one embed in the message
+#     embed.set_image(url=image_url)
+
+#     # update the message with the modified embed
+#     await message.edit(embed=embed)
+
+#     # send a confirmation message
+#     await ctx.send(f"Image of message {message_id} has been updated to {image_url}")
+
 
 # # @bot.command()
 # # async def ironman(ctx):

@@ -19,6 +19,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 judge_dictionary = {}
 
+fighters = ['mario', 'donkey_kong', 'link', 'samus', 'dark_samus', 'yoshi', 'kirby', 'fox', 'pikachu', 'luigi', 'ness', 'captain_falcon', 'jigglypuff', 'peach', 'daisy', 'bowser', 'ice_climbers', 'sheik', 'zelda', 'dr_mario', 'pichu', 'falco', 'marth', 'lucina', 'young_link', 'ganondorf', 'mewtwo', 'roy', 'chrom', 'mr_game_and_watch', 'meta_knight', 'pit', 'dark_pit', 'zero_suit_samus', 'wario', 'snake', 'ike', 'pokemon_trainer', 'diddy_kong', 'lucas', 'sonic', 'king_dedede', 'olimar', 'lucario', 'rob', 'toon_link', 'wolf', 'villager', 'mega_man', 'wii_fit_trainer', 'rosalina_and_luma', 'little_mac', 'greninja', 'mii_brawler', 'mii_swordfighter', 'mii_gunner', 'palutena', 'pac_man', 'robin', 'shulk', 'bowser_jr', 'duck_hunt', 'ryu', 'ken', 'cloud', 'corrin', 'bayonetta', 'inkling', 'ridley', 'simon', 'richter', 'king_k_rool', 'isabelle', 'incineroar', 'piranha_plant', 'joker', 'dq_hero', 'banjo_and_kazooie', 'terry', 'byleth', 'minmin', 'steve', 'sephiroth', 'pyra', 'kazuya', 'sora']
+
 
 @bot.event
 async def on_ready():
@@ -57,7 +59,27 @@ async def larry(interaction: Interaction, image: str = SlashOption(choices={
 
 @bot.slash_command(name="random", description="Random character portrait")
 async def random(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
-    random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 670)) + ".png"
+    
+    fighter = None
+
+    # For Bree Custom Command
+    if message:
+        if str(interaction.user.id) == "246065356773392385" and "ike" in message.lower():
+            fighter = "ike"
+    
+    if not fighter:
+        fighter = fighters[r.randint(0, len(fighters) - 1)]
+    
+    if fighter == "mii_brawler":
+        alt = str(r.randint(0, 1))
+    elif fighter == "mii_swordfighter":
+        alt = '0'
+    elif fighter == "mii_gunner":
+        alt = str(r.randint(0, 2))
+    else:
+        alt = str(r.randint(0, 7))
+    
+    random_image = "https://github.com/chriscolomb/ssbu/raw/master/portraits/fighters/" + fighter + '/' + alt + ".png"
 
     embed = nextcord.Embed(
         title = message

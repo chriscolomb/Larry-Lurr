@@ -16,6 +16,6 @@ def getPatrons():
             elif tier == "Tippin' Larry":
                 tip.append(name)
     # return command, live, tip
-    return ["Bree"], live, tip
+    return command, live, tip
 
 # print(getPatrons())

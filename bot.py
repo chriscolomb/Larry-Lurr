@@ -142,6 +142,9 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
     if tournament and event:
         top8_info = getTop8(tournament, event)
         if len(top8_info) == 0:
+            event = "super-smash-bros-ultimate-singles"
+            top8_info = getTop8(tournament, event)
+        if len(top8_info) == 0:
             embed = nextcord.Embed(
                 title = "Error: Incorrectly formatted event URL",
                 description = "**Example:** `https://start.gg/tournament/some-tourney/event/some-event`"
@@ -237,6 +240,9 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
         
     if tournament and event:
         seeding = getSeeding(tournament, event)
+        if len(seeding) == 0:
+            event = "super-smash-bros-ultimate-singles"
+            seeding = getSeeding(tournament, event)
         if len(seeding) == 0:
             embed = nextcord.Embed(
                 title = "Error: Incorrectly formatted event URL",

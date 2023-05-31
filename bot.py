@@ -125,6 +125,7 @@ async def judge(interaction: Interaction, message: Optional[str] = SlashOption(r
 @bot.slash_command(name="top8", description="Top 8 generator")
 async def top8(interaction: Interaction, event: Optional[str] = SlashOption(required=True, description="Event URL (https://start.gg/tournament/.../event/...)"), graphic: Optional[str] = SlashOption(required=False, description="Image URL for Top 8 graphic")):
     split = event.split('/')
+    event = ""
 
     for i in range(len(split)):
         if split[i] == "tournament":
@@ -132,6 +133,9 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
         elif split[i] == "event":
             if split[i+1]:
                 event = split[i+1]
+    
+    if event == "":
+        event = "ultimate-singles"
     
     embed = nextcord.Embed()
         
@@ -215,6 +219,7 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
 @bot.slash_command(name="seeding", description="Seeding for an event")
 async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(required=True, description="Event URL (https://start.gg/tournament/.../event/...)")):
     split = event.split('/')
+    event = ""
 
     for i in range(len(split)):
         if split[i] == "tournament":
@@ -222,6 +227,9 @@ async def seeding(interaction: Interaction, event: Optional[str] = SlashOption(r
         elif split[i] == "event":
             if split[i+1]:
                 event = split[i+1]
+    
+    if event == "":
+        event = "ultimate-singles"
     
     embed = nextcord.Embed()
 
@@ -441,7 +449,7 @@ async def patrons(interaction: Interaction):
 # #     await ctx.channel.send("1v1 is size " + str(size))
 
 
-bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
-# bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0')  # Test
+# bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
+bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0')  # Test
 
 # refresh repo

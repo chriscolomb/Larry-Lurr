@@ -1,15 +1,18 @@
+import asyncio
 import nextcord
 import random as r
-from nextcord import Interaction, InteractionMessage, SlashOption
+from nextcord import Interaction, InteractionMessage, SlashOption, SelectOption
 # from nextcord.abc import GuildChannel
 from nextcord.ext import commands
+from nextcord.ui import View, Button
 from typing import Optional
 from graphql import getTop8, getSeeding
 from patreon import getPatrons
+# from buttons import MyButtonMenu
 
 
 intents = nextcord.Intents.default()
-intents.message_content = True
+# intents.message_content = True
 
 # ENABLE WHEN MENTIONS APPROVED
 # intents.members = True
@@ -392,6 +395,121 @@ async def patrons(interaction: Interaction):
 
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
+
+
+
+
+
+# @bot.slash_command(name="workout", description="Workout and Smash!")
+# @bot.command()
+# async def menu_example(interaction: Interaction, user: nextcord.User):
+#     await MyButtonMenu().start(interaction)
+# async def workout(interaction: Interaction, user: nextcord.User):
+#     p1 = interaction.user
+#     p2 = user
+#     embed = nextcord.Embed(
+#         description = f"{p2.mention}, **Workout and Smash** with {p1.name}?",
+#     )
+#     message_embed_color(embed)
+#     await interaction.response.send_message(embed=embed)
+
+#     # Create a yes/no button view
+#     view = View()
+#     view.add_item(Button(style=nextcord.ButtonStyle.green, label="Yes", custom_id="yes"))
+#     view.add_item(Button(style=nextcord.ButtonStyle.red, label="No", custom_id="no"))
+
+#     await interaction.edit_original_message(view=view, embed=embed)
+
+#     if interaction.custom_id == "yes":
+#             # Modify the view or perform an action here
+#             embed = nextcord.Embed(
+#                 description = "You clicked yes!",
+#             )
+#             await interaction.edit_original_message(view=view, embed=embed)
+
+#     # @bot.event
+#     # async def on_yes(interaction):
+        
+#             # await interaction.message.edit("You clicked the Yes button!", ephemeral=True)
+#             # You can modify the view or take further action as needed
+
+#     try:
+#         response = await bot.wait_for("button_click", timeout=900, check=lambda i: i.custom_id in ["yes", "no"])
+#         if response.custom_id == "yes":
+#             await interaction.send(f"What workouts do you want to include, {target.mention}?")
+
+#             # Create a picklist with workout options
+#             workout_options = [
+#                 SelectOption(label="Push-Ups", value="pushups"),
+#                 SelectOption(label="Squats", value="squats"),
+#                 SelectOption(label="Pull-Ups", value="pullups"),
+#             ]
+#             workout_select = SelectOption(options=workout_options, custom_id="workout_select")
+
+#             await interaction.response.edit_message("Choose the workouts you want to include:", view=workout_select)
+
+#             try:
+#                 workout_response = await bot.wait_for("select_option", timeout=900, check=lambda i: i.custom_id == "workout_select")
+#                 selected_workouts = [option.value for option in workout_response.selected_options]
+
+#                 if not selected_workouts:
+#                     await interaction.send("No workouts selected.")
+#                 else:
+#                     await interaction.send("Do you want to include more workouts?")
+
+#                     # Create a picklist with yes/no options for more workouts
+#                     more_workouts_options = [
+#                         SelectOption(label="No", value="no"),
+#                         SelectOption(label="Not selected workouts", value="not_selected"),
+#                     ]
+#                     more_workouts_select = Select(options=more_workouts_options, custom_id="more_workouts_select")
+
+#                     await interaction.send("Choose an option:", view=more_workouts_select)
+
+#                     try:
+#                         more_workouts_response = await bot.wait_for("select_option", timeout=900, check=lambda i: i.custom_id == "more_workouts_select")
+#                         if more_workouts_response.values[0] == "no":
+#                             await interaction.send("No more workouts will be added.")
+#                         elif more_workouts_response.values[0] == "not_selected":
+#                             await interaction.send("How many reps per stock taken? (Please reply with a number)")
+
+#                             def is_valid_number(message):
+#                                 return message.content.isdigit()
+
+#                             reps_message = await bot.wait_for("message", timeout=900, check=is_valid_number)
+#                             reps_per_stock = int(reps_message.content)
+
+#                             await interaction.send("Let the workout begin! How many stocks left?")
+
+#                             # Create buttons for stock count
+#                             view = View()
+#                             for i in range(4):
+#                                 view.add_item(Button(style=nextcord.ButtonStyle.primary, label=str(i), custom_id=str(i)))
+#                             await interaction.send(view=view)
+
+#                             async def wait_for_buttons():
+#                                 while True:
+#                                     try:
+#                                         button_response = await bot.wait_for("button_click", timeout=900, check=lambda i: i.custom_id in ["0", "1", "2", "3"])
+#                                         await interaction.send(
+#                                             f"{author.mention} has taken {button_response.custom_id} stocks, and {target.mention} has taken {button_response.custom_id} stocks. "
+#                                             f"They each did {reps_per_stock} reps per stock."
+#                                         )
+#                                     except nextcord.errors.NotFound:
+#                                         break
+
+#                             await wait_for_buttons()
+#                     except asyncio.TimeoutError:
+#                         await interaction.send("Timed out. No more workouts will be added.")
+#             except asyncio.TimeoutError:
+#                 await interaction.send("Timed out. No workouts selected.")
+#         elif response.custom_id == "no":
+#             await interaction.send(f"{target.mention} declined the workout.")
+#     except asyncio.TimeoutError:
+#         await interaction.send("Timed out. No response received.")
+
+
+
 
 # @bot.slash_command(name="edit", description="Edit Larry's message")
 # async def edit(interaction: Interaction, option: str = SlashOption(choices = {"graphic": "graphic"}, description="Choose edit option")):

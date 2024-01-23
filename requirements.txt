@@ -1,3 +1,5 @@
+beautifulsoup4==4.12.3
 graphqlclient==0.2.4
 nextcord==2.4.1
 pytz==2023.2
+Requests==2.31.0

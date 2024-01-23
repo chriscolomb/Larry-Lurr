@@ -8,6 +8,8 @@ from nextcord.ui import View, Button
 from typing import Optional
 from graphql import getTop8, getSeeding
 from patreon import getPatrons
+import requests
+from bs4 import BeautifulSoup
 # from buttons import MyButtonMenu
 
 
@@ -17,8 +19,9 @@ intents = nextcord.Intents.default()
 # ENABLE WHEN MENTIONS APPROVED
 # intents.members = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(intents=intents)
 
+larry_count = 0
 
 judge_dictionary = {}
 
@@ -41,6 +44,7 @@ def message_embed_color(embed):
         embed.colour = nextcord.Colour.from_rgb(154, 38, 38)
 
 
+
 @bot.slash_command(name="larry", description="Larry image")
 async def larry(interaction: Interaction, image: str = SlashOption(choices={
     "random": "random",
@@ -49,8 +53,16 @@ async def larry(interaction: Interaction, image: str = SlashOption(choices={
     "drip": "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_62.png"
     }, description="Choose image type"), message: Optional[str] = SlashOption(required=False, description="Image title")):
 
+    global larry_count
     if image == "random":
-        image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, 66)) + ".png"
+        if larry_count == 0 or message == "refresh":
+            # Fetch the text file from the URL
+            url = "https://raw.githubusercontent.com/chriscolomb/ssbu/master/larry/larry_count.txt"
+            response = requests.get(url)
+            text_content = response.text
+            larry_count = int(text_content.strip())
+
+        image = "https://github.com/chriscolomb/ssbu/raw/master/larry/larry_" + str(r.randint(0, larry_count)) + ".png"
     
     embed = nextcord.Embed(
         title = message
@@ -92,16 +104,16 @@ async def random(interaction: Interaction, message: Optional[str] = SlashOption(
     await interaction.response.send_message(embed=embed)
 
 
-@bot.slash_command(name="ridley", description="Random Ridley portrait")
-async def ridley(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
-    ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
+# @bot.slash_command(name="ridley", description="Random Ridley portrait")
+# async def ridley(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
+#     ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
 
-    embed = nextcord.Embed(
-        title = message
-    )
-    embed.set_image(url=ridley_image)
-    message_embed_color(embed)
-    await interaction.response.send_message(embed=embed)
+#     embed = nextcord.Embed(
+#         title = message
+#     )
+#     embed.set_image(url=ridley_image)
+#     message_embed_color(embed)
+#     await interaction.response.send_message(embed=embed)
 
 
 @bot.slash_command(name="judge", description="Random judge (cannot get the same number twice in a row)")
@@ -181,30 +193,51 @@ async def top8(interaction: Interaction, event: Optional[str] = SlashOption(requ
             )
             
             top8 = ""
-            for i in range(len(top8_info[4])):
-                if i == 0:
-                    top8 = top8 + "> `1st` "
-                elif i == 1:
-                    top8 = top8 + "> `2nd` "
-                elif i == 2:
-                    top8 = top8 + "> `3rd` "
-                elif i == 3:
-                    top8 = top8 + "> `4th` "
-                elif i == 4 or i == 5:
-                    top8 = top8 + "> `5th` "
-                else:
-                    top8 = top8 + "> `7th` "
+            # print(top8_info)
+            if "ladder" in event:
+                for i in range(len(top8_info[4])):
+                    if i == 0:
+                        top8 = top8 + "> `1st` "
+                    elif i == 1:
+                        top8 = top8 + "> `2nd` "
+                    elif i == 2:
+                        top8 = top8 + "> `3rd` "
+                    elif i == 3:
+                        top8 = top8 + "> `4th` "
+                    elif i == 4:
+                        top8 = top8 + "> `5th` "
+                    elif i == 5:
+                        top8 = top8 + "> `6th` "
+                    elif i == 6:
+                        top8 = top8 + "> `7th` "
+                    else:
+                        top8 = top8 + "> `8th` "
+                    top8 = top8 + top8_info[4][i][0] + "\n"
+            else:
+                for i in range(len(top8_info[4])):
+                    if i == 0:
+                        top8 = top8 + "> `1st` "
+                    elif i == 1:
+                        top8 = top8 + "> `2nd` "
+                    elif i == 2:
+                        top8 = top8 + "> `3rd` "
+                    elif i == 3:
+                        top8 = top8 + "> `4th` "
+                    elif i == 4 or i == 5:
+                        top8 = top8 + "> `5th` "
+                    else:
+                        top8 = top8 + "> `7th` "
 
-                # ENABLE WHEN MENTIONS APPROVED
-                # -----------------------------
-                # if top8_info[4][i][1]:
-                #     top8 = top8 + top8_info[4][i][1] + "\n"
-                # else:
-                #     top8 = top8 + top8_info[4][i][0] + "\n"
-                # -----------------------------
-                
-                # DISABLE WHEN MENTIONS APPROVED
-                top8 = top8 + top8_info[4][i][0] + "\n"
+                    # ENABLE WHEN MENTIONS APPROVED
+                    # -----------------------------
+                    # if top8_info[4][i][1]:
+                    #     top8 = top8 + top8_info[4][i][1] + "\n"
+                    # else:
+                    #     top8 = top8 + top8_info[4][i][0] + "\n"
+                    # -----------------------------
+                    
+                    # DISABLE WHEN MENTIONS APPROVED
+                    top8 = top8 + top8_info[4][i][0] + "\n"
 
             embed.add_field(name="Top 8 - " + str(top8_info[2]) + " Participants", value=top8)
             embed.set_footer(text=top8_info[3])
@@ -397,7 +430,36 @@ async def patrons(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+# @bot.slash_command(name="matchbox", description="See MatchBox ranking")
+# async def matchbox(interaction: Interaction):
+#     url = "https://smashpros.gg/user/teamduck"
 
+#     # Fetch the HTML content from the URL
+#     response = requests.get(url)
+#     html_content = response.text
+
+#     # Parse the HTML using BeautifulSoup
+#     soup = BeautifulSoup(html_content, 'html.parser')
+
+#     # Extract the desired information
+#     mmr_element = soup.find('div', class_='v-list-item-subtitle')  # Assuming the MMR is inside a div with this class
+#     mmr = mmr_element.text.strip().split()[0]  # Extracting the numerical part of the MMR
+
+#     win_loss_element = soup.find('span', class_='font-weight-bold text-green')  # Assuming the win count is inside a span with this class
+#     win_count = win_loss_element.text.strip().split()[0]  # Extracting the numerical part of the win count
+
+#     loss_element = soup.find('span', class_='font-weight-bold text-red')  # Assuming the loss count is inside a span with this class
+#     loss_count = loss_element.text.strip().split()[0]  # Extracting the numerical part of the loss count
+
+
+#     embed = nextcord.Embed(
+#         title = "MatchBox Ranking for TeamDuck",
+#         description = "MMR: " + mmr + "\n" + "Wins: " + win_count + "\n" + "Losses: " + loss_count
+#     )
+    
+    
+#     message_embed_color(embed)
+#     await interaction.response.send_message(embed=embed)
 
 
 # @bot.slash_command(name="workout", description="Workout and Smash!")
@@ -574,6 +636,7 @@ async def patrons(interaction: Interaction):
 
 
 bot.run('OTk0NzAyMjIyNDE3OTkzODIw.GM_zi3.YmnpRUQEDp6Et_F0n30e5egRYtVRxAZNoAbXZU') #Real
-# bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GwaPvU.mHwZ9zrLTwQ1ZiIByD9Yj5yb2Oj008YhbOXfJ0')  # Test
+# bot.run('OTk5Nzc4NjMwMjg2NzA4ODI2.GfKRAh.auG5H939WPNZBt-vgI0sSbCFD-H4AWbTEg5fQ4')  # Test
 
 # refresh repo
+

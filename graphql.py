@@ -2,8 +2,11 @@ import json
 from graphqlclient import GraphQLClient
 import datetime as dt
 import pytz
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-authToken = "7fe548df9f13fc189caa59a8c299aff9"
+authToken = os.getenv("STARTGG_TOKEN")
 
 client = GraphQLClient('https://api.start.gg/gql/alpha')
 client.inject_token('Bearer ' + authToken)

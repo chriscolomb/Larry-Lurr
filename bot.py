@@ -938,10 +938,5 @@ def shutdown_handler(signum, frame):
 signal.signal(signal.SIGINT, shutdown_handler)
 signal.signal(signal.SIGTERM, shutdown_handler)
 
-# bot.run(os.getenv('PROD_BOT_TOKEN'))  # Production
-bot.run(os.getenv('TEST_BOT_TOKEN'))  # Testing
-
-
-
-# refresh repo
-
+bot.run(os.getenv('PROD_BOT_TOKEN'))  # Production
+# bot.run(os.getenv('TEST_BOT_TOKEN'))  # Testing

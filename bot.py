@@ -11,7 +11,7 @@ from patreon import getPatrons
 import requests
 from bs4 import BeautifulSoup
 # from buttons import MyButtonMenu
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 from pymongo.errors import ConnectionFailure
 import os
 import signal
@@ -152,8 +152,14 @@ try:
     db = client['Database']
     users_collection = db['Users']
     print("MongoDB connection successful.")
-except ConnectionFailure:
-    print("MongoDB connection failed.")
+except errors.ConnectionFailure as e:
+    print(f"MongoDB connection failed: {e}")
+except errors.ConfigurationError as e:
+    print(f"MongoDB configuration error: {e}")
+except errors.ServerSelectionTimeoutError as e:
+    print(f"MongoDB server selection timeout: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 
 @bot.event
 async def on_ready():

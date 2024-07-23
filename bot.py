@@ -16,7 +16,9 @@ from pymongo.errors import ConnectionFailure
 import os
 import signal
 from dotenv import load_dotenv
+import certifi 
 load_dotenv()
+ca = certifi.where()
 
 intents = nextcord.Intents.default()
 # intents.message_content = True
@@ -53,44 +55,44 @@ characters = [
 
 fighter_emojis = {
     "Mario": "<:Mario:919488424212332585>",
-    "Donkey Kong": "<:DonkeyKong:1078080099242496081>",
+    "Donkey Kong": "<:14:1265090018871873637>",
     "Link": "<:Link:1078095420565233796>",
     "Samus": "<:Samus:1078095742507425862>",
-    "Dark Samus": "<:DarkSamus:1078080096440680530>",
+    "Dark Samus": "<:12:1265089999049588748>",
     "Yoshi": "<:Yoshi:1078128416261410816>",
     "Kirby": "<:Kirby:919488424325578823>",
-    "Fox": "<:Fox:1078080116514627594>",
+    "Fox": "<:18:1265090084471050261>",
     "Pikachu": "<:Pikachu:1078095698777608222>",
     "Luigi": "<:Luigi:1078095442761494548>",
     "Ness": "<:Ness:1078095551683379260>",
-    "Captain Falcon": "<:CaptainFalcon:1078080073493643385>",
+    "Captain Falcon": "<:06:1265089936848322650>",
     "Jigglypuff": "<:Jigglypuff:1078095389879713792>",
     "Peach": "<:Peach:919488424015188000>",
-    "Daisy": "<:Daisy:1078080080355524720>",
-    "Bowser": "<:Bowser:1078080023879229530>",
-    "Ice Climbers": "<:IceClimbers:1078095364067966986>",
+    "Daisy": "<:10:1265089977944113265>",
+    "Bowser": "<:03:1265089892644421652>",
+    "Ice Climbers": "<:22:1265090213370134659>",
     "Sheik": "<:Sheik:1078128428101947453>",
     "Zelda": "<:Zelda:1078128420514447410>",
-    "Dr. Mario": "<:DrMario:1078080101058629793>",
+    "Dr. Mario": "<:15:1265090035451953172>",
     "Pichu": "<:Pichu:1078095697162817636>",
-    "Falco": "<:Falco:1078080114778193922>",
+    "Falco": "<:17:1265090067865796640>",
     "Marth": "<:Marth:1078095519680839711>",
     "Lucina": "<:Lucina:1078095441180246096>",
     "Young Link": "<:YoungLink:1078128418064961636>",
-    "Ganondorf": "<:Ganondorf:1078095320782749716>",
+    "Ganondorf": "<:19:1265090155845386301>",
     "Mewtwo": "<:Mewtwo:1078095516790947840>",
     "Roy": "<:Roy:1078095739034554468>",
-    "Chrom": "<:Chrom:1078080075771158649>",
+    "Chrom": "<:07:1265089946528518294>",
     "Mr. Game & Watch": "<:MrGameWatch:1078095549812707358>",
     "Meta Knight": "<:MetaKnight:1078095515515887707>",
     "Pit": "<:Pit:1078095702669930596>",
-    "Dark Pit": "<:DarkPit:1078080094393880597>",
+    "Dark Pit": "<:11:1265089989298094163>",
     "Zero Suit Samus": "<:ZeroSuitSamus:1078128423563694161>",
     "Wario": "<:Wario:1078128410074828902>",
     "Snake": "<:Snake:1078128433609048104>",
-    "Ike": "<:Ike:1078095365284307055>",
+    "Ike": "<:23:1265090227937087519>",
     "Pokémon Trainer": "<:PokemonTrainer:1078095703877886103>",
-    "Diddy Kong": "<:DiddyKong:1078080097912901642>",
+    "Diddy Kong": "<:13:1265090009040687217>",
     "Lucas": "<:Lucas:1078095439758372865>",
     "Sonic": "<:Sonic:1078128434796036139>",
     "King Dedede": "<:KingDedede:1078095413850153051>",
@@ -104,31 +106,31 @@ fighter_emojis = {
     "Wii Fit Trainer": "<:WiiFitTrainer:1078128413186986044>",
     "Rosalina & Luma": "<:Rosalina:1078095737805619282>",
     "Little Mac": "<:LittleMac:1078095421286654108>",
-    "Greninja": "<:Greninja:1078095322783432774>",
+    "Greninja": "<:20:1265090183565672579>",
     "Palutena": "<:Palutena:1078095695510257665>",
     "Pac-Man": "<:PacMan:1078095693857701888>",
     "Robin": "<:Robin:1078095735888810105>",
     "Shulk": "<:Shulk:1078128430790492170>",
-    "Bowser Jr.": "<:BowserJr:1078080024944582777>",
-    "Duck Hunt": "<:DuckHunt:1078080113326968902>",
+    "Bowser Jr.": "<:04:1265089905877586013>",
+    "Duck Hunt": "<:16:1265090053810552865>",
     "Ryu": "<:Ryu:1078095739865022465>",
     "Ken": "<:Ken:1078095394770255942>",
-    "Cloud": "<:Cloud:1078080077276925962>",
-    "Corrin": "<:Corrin:1078080078963015711>",
-    "Bayonetta": "<:Bayonetta:1078080022662885556>",
-    "Inkling": "<:Inkling:1078095368820109312>",
+    "Cloud": "<:08:1265089956343316624>",
+    "Corrin": "<:09:1265089967567274164>",
+    "Bayonetta": "<:02:1265089867084464220>",
+    "Inkling": "<:25:1265090262410072208>",
     "Ridley": "<:Ridley:1078095732696961024>",
     "Simon": "<:Simon:1078095774505775188>",
     "Richter": "<:Richter:1078095731619004576>",
     "King K. Rool": "<:KingKRool:1078095416492572672>",
     "Isabelle": "<:Isabelle:1078095387845480488>",
-    "Incineroar": "<:Incineroar:1078095366525820978>",
+    "Incineroar": "<:24:1265090244693332090>",
     "Piranha Plant": "<:PiranhaPlant:1078095701470359592>",
     "Joker": "<:Joker:1078095391096053760>",
-    "Hero": "<:Hero:1078095361719156736>",
-    "Banjo & Kazooie": "<:BanjoKazooie:1078080020741885983>",
+    "Hero": "<:21:1265090200720244911>",
+    "Banjo & Kazooie": "<:01:1265089799333609604>",
     "Terry": "<:Terry:1078128442198990948>",
-    "Byleth": "<:Byleth:1078080026865569922>",
+    "Byleth": "<:05:1265089918418554911>",
     "Min Min": "<:MinMin:1078095548646703266>",
     "Steve": "<:Steve:1078128439908909176>",
     "Sephiroth": "<:Sephiroth:1078128424956211251>",
@@ -145,7 +147,7 @@ client = None
 db = None
 
 try:
-    client = MongoClient(mongo_uri)
+    client = MongoClient(mongo_uri, tlsCAFile=ca)
     client.admin.command('ismaster')
     db = client['Database']
     users_collection = db['Users']
@@ -224,22 +226,71 @@ async def compare_elite(interaction: Interaction, user: nextcord.User):
     fighters_in_common_percentage = "{:.2f}".format((fighters_in_common / total_fighters) * 100)
 
     if user1_in_elite < user2_in_elite:
-        description = "`" + user2.name + "` is `" + "{:.1f}".format(user2_in_elite / user1_in_elite) + "x` better than you!\n\n"
+        description1 = "`" + user2.name + "` is `" + "{:.1f}".format(user2_in_elite / user1_in_elite) + "x` better than you!\n\n"
     elif user1_in_elite > user2_in_elite:
-        description = "`" + user2.name + "` is `" + "{:.1f}".format(user1_in_elite / user2_in_elite) + "x` worse than you!\n\n"
+        description1 = "`" + user2.name + "` is `" + "{:.1f}".format(user1_in_elite / user2_in_elite) + "x` worse than you!\n\n"
     else:
-        description = "You and `" + user2.name + "` have the same number of fighters in Elite Smash!\n\n"
+        description1 = "You and `" + user2.name + "` have the same number of fighters in Elite Smash!\n\n"
     
-    description += "**" + user1.name + ": ** `" + str(user1_in_elite) + "/" + str(total_fighters) + "` - `" + user1_percentage + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user1_eliteRoster.items()])
-    description += "\n\n**" + user2name + ": ** `" + str(user2_in_elite) + "/" + str(total_fighters) + "` - `" + user2_percentage + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user2_eliteRoster.items()])
-    description += "\n\n**Fighters in Common:** `" + str(fighters_in_common) + "/" + str(total_fighters) + "` - `" + fighters_in_common_percentage + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if value and user2_eliteRoster[char] else "" for char, value in user1_eliteRoster.items()])
+    description1 += "**" + user1.name + ": ** `" + str(user1_in_elite) + "/" + str(total_fighters) + "` - `" + user1_percentage + "%`\n"
+    description1 += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user1_eliteRoster.items()])
+    description2 = "**" + user2name + ": ** `" + str(user2_in_elite) + "/" + str(total_fighters) + "` - `" + user2_percentage + "%`\n"
+    description2 += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user2_eliteRoster.items()])
 
-    embed = nextcord.Embed(title="Elite Smash Stats Comparison", description=description)
-    message_embed_color(embed)
-    await interaction.response.send_message(embed=embed)
+    description3 = "**Fighters in Common:** `" + str(fighters_in_common) + "/" + str(total_fighters) + "` - `" + fighters_in_common_percentage + "%`\n"
+    description3 += "> " + "".join([fighter_emojis[char] if value and user2_eliteRoster[char] else "" for char, value in user1_eliteRoster.items()])
+
+    if (len(description1)+len(description2)+len(description3)) < 4096:
+        embed = nextcord.Embed(title="Elite Smash Stats Comparison", description=description1 + "\n\n" + description2 + "\n\n" + description3)
+        message_embed_color(embed)
+        await interaction.response.send_message(embed=embed)
+        return
+
+    embed1 = nextcord.Embed(title="Elite Smash Stats Comparison", description=description1)
+    embed2 = nextcord.Embed(title="Elite Smash Stats Comparison (Continued)", description=description2)
+    embed3 = nextcord.Embed(title="Elite Smash Stats Comparison (Continued)", description=description3)
+    reaction_help = "⬇ Reactions don't work? Use \"/help reactions\""
+    embed1.set_footer(text=reaction_help)
+    embed2.set_footer(text=reaction_help)
+    embed3.set_footer(text=reaction_help)
+    message_embed_color(embed1)
+    message_embed_color(embed2)
+    message_embed_color(embed3)
+
+    embeds = [embed1, embed2, embed3]
+    
+    cur = 0
+    await interaction.response.send_message(embed=embeds[cur])
+    message = await interaction.original_message()
+
+    await message.add_reaction('⏪')
+    await message.add_reaction('◀️')
+    await message.add_reaction('▶️')
+    await message.add_reaction('⏩')
+
+    def check(reaction, user):
+        return user == interaction.user and str(reaction.emoji) in ['⏪', '◀️', '▶️', '⏩']
+
+    while True:
+        try:
+            reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+            if str(reaction.emoji) == '▶️' and cur < len(embeds) - 1:
+                cur += 1
+                await message.edit(embed=embeds[cur])
+            elif str(reaction.emoji) == '◀️' and cur > 0:
+                cur -= 1
+                await message.edit(embed=embeds[cur])
+            elif str(reaction.emoji) == '⏪':
+                cur = 0
+                await message.edit(embed=embeds[cur])
+            elif str(reaction.emoji) == '⏩':
+                cur = len(embeds) - 1
+                await message.edit(embed=embeds[cur])
+            
+            await message.remove_reaction(reaction, user)
+            
+        except nextcord.NotFound:
+            break
 
 
 @bot.slash_command(name="modify_elite", description="Add or remove Elite Smash fighters")

@@ -147,7 +147,7 @@ client = None
 db = None
 
 try:
-    client = MongoClient(mongo_uri, tlsCAFile=ca)
+    client = MongoClient(mongo_uri, tlsCAFile=ca, tls=True, tlsAllowInvalidCertificates=True)
     client.admin.command('ismaster')
     db = client['Database']
     users_collection = db['Users']

@@ -12,13 +12,10 @@ import requests
 from bs4 import BeautifulSoup
 # from buttons import MyButtonMenu
 from pymongo import MongoClient, errors
-from pymongo.errors import ConnectionFailure
 import os
 import signal
 from dotenv import load_dotenv
-import certifi 
 load_dotenv()
-ca = certifi.where()
 
 intents = nextcord.Intents.default()
 # intents.message_content = True
@@ -34,120 +31,103 @@ judge_dictionary = {}
 
 total_fighters = 86
 
-fighters = ['mario', 'donkey_kong', 'link', 'samus', 'dark_samus', 'yoshi', 'kirby', 'fox', 'pikachu', 'luigi', 'ness', 'captain_falcon', 'jigglypuff', 'peach', 'daisy', 'bowser', 'ice_climbers', 'sheik', 'zelda', 'dr_mario', 'pichu', 'falco', 'marth', 'lucina', 'young_link', 'ganondorf', 'mewtwo', 'roy', 'chrom', 'mr_game_and_watch', 'meta_knight', 'pit', 'dark_pit', 'zero_suit_samus', 'wario', 'snake', 'ike', 'pokemon_trainer', 'diddy_kong', 'lucas', 'sonic', 'king_dedede', 'olimar', 'lucario', 'rob', 'toon_link', 'wolf', 'villager', 'mega_man', 'wii_fit_trainer', 'rosalina_and_luma', 'little_mac', 'greninja', 'mii_brawler', 'mii_swordfighter', 'mii_gunner', 'palutena', 'pac_man', 'robin', 'shulk', 'bowser_jr', 'duck_hunt', 'ryu', 'ken', 'cloud', 'corrin', 'bayonetta', 'inkling', 'ridley', 'simon', 'richter', 'king_k_rool', 'isabelle', 'incineroar', 'piranha_plant', 'joker', 'dq_hero', 'banjo_and_kazooie', 'terry', 'byleth', 'minmin', 'steve', 'sephiroth', 'pyra', 'kazuya', 'sora']
-
-# List of all characters in Smash Bros Ultimate
-characters = [
-    "Mario", "Donkey Kong", "Link", "Samus", "Dark Samus", "Yoshi", "Kirby", 
-    "Fox", "Pikachu", "Luigi", "Ness", "Captain Falcon", "Jigglypuff", "Peach", 
-    "Daisy", "Bowser", "Ice Climbers", "Sheik", "Zelda", "Dr. Mario", "Pichu", 
-    "Falco", "Marth", "Lucina", "Young Link", "Ganondorf", "Mewtwo", "Roy", 
-    "Chrom", "Mr. Game & Watch", "Meta Knight", "Pit", "Dark Pit", "Zero Suit Samus", 
-    "Wario", "Snake", "Ike", "Pokémon Trainer", "Diddy Kong", "Lucas", "Sonic", 
-    "King Dedede", "Olimar", "Lucario", "R.O.B.", "Toon Link", "Wolf", "Villager", 
-    "Mega Man", "Wii Fit Trainer", "Rosalina & Luma", "Little Mac", "Greninja", 
-    "Palutena", "Pac-Man", "Robin", "Shulk", "Bowser Jr.", "Duck Hunt", "Ryu", 
-    "Ken", "Cloud", "Corrin", "Bayonetta", "Inkling", "Ridley", "Simon", "Richter", 
-    "King K. Rool", "Isabelle", "Incineroar", "Piranha Plant", "Joker", "Hero", 
-    "Banjo & Kazooie", "Terry", "Byleth", "Min Min", "Steve", "Sephiroth", 
-    "Pyra/Mythra", "Kazuya", "Sora", "Mii Brawler", "Mii Swordfighter", "Mii Gunner"
-]
-
-fighter_emojis = {
-    "Mario": "<:Mario:919488424212332585>",
-    "Donkey Kong": "<:14:1265090018871873637>",
-    "Link": "<:Link:1078095420565233796>",
-    "Samus": "<:Samus:1078095742507425862>",
-    "Dark Samus": "<:12:1265089999049588748>",
-    "Yoshi": "<:Yoshi:1078128416261410816>",
-    "Kirby": "<:Kirby:919488424325578823>",
-    "Fox": "<:18:1265090084471050261>",
-    "Pikachu": "<:Pikachu:1078095698777608222>",
-    "Luigi": "<:Luigi:1078095442761494548>",
-    "Ness": "<:Ness:1078095551683379260>",
-    "Captain Falcon": "<:06:1265089936848322650>",
-    "Jigglypuff": "<:Jigglypuff:1078095389879713792>",
-    "Peach": "<:Peach:919488424015188000>",
-    "Daisy": "<:10:1265089977944113265>",
-    "Bowser": "<:03:1265089892644421652>",
-    "Ice Climbers": "<:22:1265090213370134659>",
-    "Sheik": "<:Sheik:1078128428101947453>",
-    "Zelda": "<:Zelda:1078128420514447410>",
-    "Dr. Mario": "<:15:1265090035451953172>",
-    "Pichu": "<:Pichu:1078095697162817636>",
-    "Falco": "<:17:1265090067865796640>",
-    "Marth": "<:Marth:1078095519680839711>",
-    "Lucina": "<:Lucina:1078095441180246096>",
-    "Young Link": "<:YoungLink:1078128418064961636>",
-    "Ganondorf": "<:19:1265090155845386301>",
-    "Mewtwo": "<:Mewtwo:1078095516790947840>",
-    "Roy": "<:Roy:1078095739034554468>",
-    "Chrom": "<:07:1265089946528518294>",
-    "Mr. Game & Watch": "<:MrGameWatch:1078095549812707358>",
-    "Meta Knight": "<:MetaKnight:1078095515515887707>",
-    "Pit": "<:Pit:1078095702669930596>",
-    "Dark Pit": "<:11:1265089989298094163>",
-    "Zero Suit Samus": "<:ZeroSuitSamus:1078128423563694161>",
-    "Wario": "<:Wario:1078128410074828902>",
-    "Snake": "<:Snake:1078128433609048104>",
-    "Ike": "<:23:1265090227937087519>",
-    "Pokémon Trainer": "<:PokemonTrainer:1078095703877886103>",
-    "Diddy Kong": "<:13:1265090009040687217>",
-    "Lucas": "<:Lucas:1078095439758372865>",
-    "Sonic": "<:Sonic:1078128434796036139>",
-    "King Dedede": "<:KingDedede:1078095413850153051>",
-    "Olimar": "<:Olimar:1078095705958273055>",
-    "Lucario": "<:Lucario:1078095437510226022>",
-    "R.O.B.": "<:ROB:1078095734190116945>",
-    "Toon Link": "<:ToonLink:1078128802040905809>",
-    "Wolf": "<:Wolf:1078128414550134844>",
-    "Villager": "<:Villager:1078128445281812571>",
-    "Mega Man": "<:MegaMan:1078095512978325606>",
-    "Wii Fit Trainer": "<:WiiFitTrainer:1078128413186986044>",
-    "Rosalina & Luma": "<:Rosalina:1078095737805619282>",
-    "Little Mac": "<:LittleMac:1078095421286654108>",
-    "Greninja": "<:20:1265090183565672579>",
-    "Palutena": "<:Palutena:1078095695510257665>",
-    "Pac-Man": "<:PacMan:1078095693857701888>",
-    "Robin": "<:Robin:1078095735888810105>",
-    "Shulk": "<:Shulk:1078128430790492170>",
-    "Bowser Jr.": "<:04:1265089905877586013>",
-    "Duck Hunt": "<:16:1265090053810552865>",
-    "Ryu": "<:Ryu:1078095739865022465>",
-    "Ken": "<:Ken:1078095394770255942>",
-    "Cloud": "<:08:1265089956343316624>",
-    "Corrin": "<:09:1265089967567274164>",
-    "Bayonetta": "<:02:1265089867084464220>",
-    "Inkling": "<:25:1265090262410072208>",
-    "Ridley": "<:Ridley:1078095732696961024>",
-    "Simon": "<:Simon:1078095774505775188>",
-    "Richter": "<:Richter:1078095731619004576>",
-    "King K. Rool": "<:KingKRool:1078095416492572672>",
-    "Isabelle": "<:Isabelle:1078095387845480488>",
-    "Incineroar": "<:24:1265090244693332090>",
-    "Piranha Plant": "<:PiranhaPlant:1078095701470359592>",
-    "Joker": "<:Joker:1078095391096053760>",
-    "Hero": "<:21:1265090200720244911>",
-    "Banjo & Kazooie": "<:01:1265089799333609604>",
-    "Terry": "<:Terry:1078128442198990948>",
-    "Byleth": "<:05:1265089918418554911>",
-    "Min Min": "<:MinMin:1078095548646703266>",
-    "Steve": "<:Steve:1078128439908909176>",
-    "Sephiroth": "<:Sephiroth:1078128424956211251>",
-    "Pyra/Mythra": "<:PyraMythra:1078095744004796576>",
-    "Kazuya": "<:Kazuya:1078095392517931068>",
-    "Sora": "<:Sora:1078128437539119224>",
-    "Mii Brawler": "<:MiiBrawler:1078095517860495410>",
-    "Mii Swordfighter": "<:MiiSwordfighter:1078095547480686612>",
-    "Mii Gunner": "<:MiiGunner:1078095545568071751>"
+# Define the fighters dictionary as a global variable
+fighters = {
+    "Mario": {"url": "mario", "emoji": "<:Mario:919488424212332585>"},
+    "Donkey Kong": {"url": "donkey_kong", "emoji": "<:DonkeyKong:1078080099242496081>"},
+    "Link": {"url": "link", "emoji": "<:Link:1078095420565233796>"},
+    "Samus": {"url": "samus", "emoji": "<:Samus:1078095742507425862>"},
+    "Dark Samus": {"url": "dark_samus", "emoji": "<:DarkSamus:1078080096440680530>"},
+    "Yoshi": {"url": "yoshi", "emoji": "<:Yoshi:1078128416261410816>"},
+    "Kirby": {"url": "kirby", "emoji": "<:Kirby:919488424325578823>"},
+    "Fox": {"url": "fox", "emoji": "<:Fox:1078080116514627594>"},
+    "Pikachu": {"url": "pikachu", "emoji": "<:Pikachu:1078095698777608222>"},
+    "Luigi": {"url": "luigi", "emoji": "<:Luigi:1078095442761494548>"},
+    "Ness": {"url": "ness", "emoji": "<:Ness:1078095551683379260>"},
+    "Captain Falcon": {"url": "captain_falcon", "emoji": "<:CaptainFalcon:1078080073493643385>"},
+    "Jigglypuff": {"url": "jigglypuff", "emoji": "<:Jigglypuff:1078095389879713792>"},
+    "Peach": {"url": "peach", "emoji": "<:Peach:919488424015188000>"},
+    "Daisy": {"url": "daisy", "emoji": "<:Daisy:1078080080355524720>"},
+    "Bowser": {"url": "bowser", "emoji": "<:Bowser:1078080023879229530>"},
+    "Ice Climbers": {"url": "ice_climbers", "emoji": "<:IceClimbers:1078095364067966986>"},
+    "Sheik": {"url": "sheik", "emoji": "<:Sheik:1078128428101947453>"},
+    "Zelda": {"url": "zelda", "emoji": "<:Zelda:1078128420514447410>"},
+    "Dr. Mario": {"url": "dr_mario", "emoji": "<:DrMario:1078080101058629793>"},
+    "Pichu": {"url": "pichu", "emoji": "<:Pichu:1078095697162817636>"},
+    "Falco": {"url": "falco", "emoji": "<:Falco:1078080114778193922>"},
+    "Marth": {"url": "marth", "emoji": "<:Marth:1078095519680839711>"},
+    "Lucina": {"url": "lucina", "emoji": "<:Lucina:1078095441180246096>"},
+    "Young Link": {"url": "young_link", "emoji": "<:YoungLink:1078128418064961636>"},
+    "Ganondorf": {"url": "ganondorf", "emoji": "<:Ganondorf:1078095320782749716>"},
+    "Mewtwo": {"url": "mewtwo", "emoji": "<:Mewtwo:1078095516790947840>"},
+    "Roy": {"url": "roy", "emoji": "<:Roy:1078095739034554468>"},
+    "Chrom": {"url": "chrom", "emoji": "<:Chrom:1078080075771158649>"},
+    "Mr. Game & Watch": {"url": "mr_game_and_watch", "emoji": "<:MrGameWatch:1078095549812707358>"},
+    "Meta Knight": {"url": "meta_knight", "emoji": "<:MetaKnight:1078095515515887707>"},
+    "Pit": {"url": "pit", "emoji": "<:Pit:1078095702669930596>"},
+    "Dark Pit": {"url": "dark_pit", "emoji": "<:DarkPit:1078080094393880597>"},
+    "Zero Suit Samus": {"url": "zero_suit_samus", "emoji": "<:ZeroSuitSamus:1078128423563694161>"},
+    "Wario": {"url": "wario", "emoji": "<:Wario:1078128410074828902>"},
+    "Snake": {"url": "snake", "emoji": "<:Snake:1078128433609048104>"},
+    "Ike": {"url": "ike", "emoji": "<:Ike:1078095365284307055>"},
+    "Pokémon Trainer": {"url": "pokemon_trainer", "emoji": "<:PokemonTrainer:1078095703877886103>"},
+    "Diddy Kong": {"url": "diddy_kong", "emoji": "<:DiddyKong:1078080097912901642>"},
+    "Lucas": {"url": "lucas", "emoji": "<:Lucas:1078095439758372865>"},
+    "Sonic": {"url": "sonic", "emoji": "<:Sonic:1078128434796036139>"},
+    "King Dedede": {"url": "king_dedede", "emoji": "<:KingDedede:1078095413850153051>"},
+    "Olimar": {"url": "olimar", "emoji": "<:Olimar:1078095705958273055>"},
+    "Lucario": {"url": "lucario", "emoji": "<:Lucario:1078095437510226022>"},
+    "R.O.B.": {"url": "rob", "emoji": "<:ROB:1078095734190116945>"},
+    "Toon Link": {"url": "toon_link", "emoji": "<:ToonLink:1078128802040905809>"},
+    "Wolf": {"url": "wolf", "emoji": "<:Wolf:1078128414550134844>"},
+    "Villager": {"url": "villager", "emoji": "<:Villager:1078128445281812571>"},
+    "Mega Man": {"url": "mega_man", "emoji": "<:MegaMan:1078095512978325606>"},
+    "Wii Fit Trainer": {"url": "wii_fit_trainer", "emoji": "<:WiiFitTrainer:1078128413186986044>"},
+    "Rosalina & Luma": {"url": "rosalina_and_luma", "emoji": "<:Rosalina:1078095737805619282>"},
+    "Little Mac": {"url": "little_mac", "emoji": "<:LittleMac:1078095421286654108>"},
+    "Greninja": {"url": "greninja", "emoji": "<:Greninja:1078095322783432774>"},
+    "Palutena": {"url": "palutena", "emoji": "<:Palutena:1078095695510257665>"},
+    "Pac-Man": {"url": "pac_man", "emoji": "<:PacMan:1078095693857701888>"},
+    "Robin": {"url": "robin", "emoji": "<:Robin:1078095735888810105>"},
+    "Shulk": {"url": "shulk", "emoji": "<:Shulk:1078128430790492170>"},
+    "Bowser Jr.": {"url": "bowser_jr", "emoji": "<:BowserJr:1078080024944582777>"},
+    "Duck Hunt": {"url": "duck_hunt", "emoji": "<:DuckHunt:1078080113326968902>"},
+    "Ryu": {"url": "ryu", "emoji": "<:Ryu:1078095739865022465>"},
+    "Ken": {"url": "ken", "emoji": "<:Ken:1078095394770255942>"},
+    "Cloud": {"url": "cloud", "emoji": "<:Cloud:1078080077276925962>"},
+    "Corrin": {"url": "corrin", "emoji": "<:Corrin:1078080078963015711>"},
+    "Bayonetta": {"url": "bayonetta", "emoji": "<:Bayonetta:1078080022662885556>"},
+    "Inkling": {"url": "inkling", "emoji": "<:Inkling:1078095368820109312>"},
+    "Ridley": {"url": "ridley", "emoji": "<:Ridley:1078095732696961024>"},
+    "Simon": {"url": "simon", "emoji": "<:Simon:1078095774505775188>"},
+    "Richter": {"url": "richter", "emoji": "<:Richter:1078095731619004576>"},
+    "King K. Rool": {"url": "king_k_rool", "emoji": "<:KingKRool:1078095416492572672>"},
+    "Isabelle": {"url": "isabelle", "emoji": "<:Isabelle:1078095387845480488>"},
+    "Incineroar": {"url": "incineroar", "emoji": "<:Incineroar:1078095366525820978>"},
+    "Piranha Plant": {"url": "piranha_plant", "emoji": "<:PiranhaPlant:1078095701470359592>"},
+    "Joker": {"url": "joker", "emoji": "<:Joker:1078095391096053760>"},
+    "Hero": {"url": "dq_hero", "emoji": "<:Hero:1078095361719156736>"},
+    "Banjo & Kazooie": {"url": "banjo_and_kazooie", "emoji": "<:BanjoKazooie:1078080020741885983>"},
+    "Terry": {"url": "terry", "emoji": "<:Terry:1078128442198990948>"},
+    "Byleth": {"url": "byleth", "emoji": "<:Byleth:1078080026865569922>"},
+    "Min Min": {"url": "minmin", "emoji": "<:MinMin:1078095548646703266>"},
+    "Steve": {"url": "steve", "emoji": "<:Steve:1078128439908909176>"},
+    "Sephiroth": {"url": "sephiroth", "emoji": "<:Sephiroth:1078128424956211251>"},
+    "Pyra/Mythra": {"url": "pyra", "emoji": "<:PyraMythra:1078095744004796576>"},
+    "Kazuya": {"url": "kazuya", "emoji": "<:Kazuya:1078095392517931068>"},
+    "Sora": {"url": "sora", "emoji": "<:Sora:1078128437539119224>"},
+    "Mii Brawler": {"url": "mii_brawler", "emoji": "<:MiiBrawler:1078095517860495410>"},
+    "Mii Swordfighter": {"url": "mii_swordfighter", "emoji": "<:MiiSwordfighter:1078095547480686612>"},
+    "Mii Gunner": {"url": "mii_gunner", "emoji": "<:MiiGunner:1078095545568071751>"}
 }
+fighters_list = list(fighters.keys())
 
 mongo_uri = os.getenv("MONGODB_URI")
 client = None
 db = None
 
 try:
-    client = MongoClient(mongo_uri, tlsCAFile=ca, tls=True, tlsAllowInvalidCertificates=True)
+    client = MongoClient(mongo_uri)
     client.admin.command('ismaster')
     db = client['Database']
     users_collection = db['Users']
@@ -194,10 +174,10 @@ async def my_elite(interaction: Interaction):
 
     percentage = "{:.2f}".format((sum(eliteRoster.values()) / total_fighters) * 100)
     description = "**In Elite:** `" + str(sum(eliteRoster.values())) + "/" + str(total_fighters) + "` - `" + percentage + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if value else "" for char, value in eliteRoster.items()])
+    description += "> " + "".join([fighters[char]["emoji"] if value else "" for char, value in eliteRoster.items()])
     if not_in_roster != 0:
         description += "\n\n**Not In Elite:** `" + str(not_in_roster) + "/" + str(total_fighters) + "` - `" + "{:.2f}".format(((total_fighters - sum(eliteRoster.values())) / total_fighters) * 100) + "%`\n"
-        description += "> " + "".join([fighter_emojis[char] if not value else "" for char, value in eliteRoster.items()])
+        description += "> " + "".join([fighters[char]["emoji"] if not value else "" for char, value in eliteRoster.items()])
 
     embed = nextcord.Embed(title="Elite Smash Stats", description=description)
     message_embed_color(embed)
@@ -240,12 +220,12 @@ async def compare_elite(interaction: Interaction, user: nextcord.User):
         description1 = "You and `" + user2.name + "` have the same number of fighters in Elite Smash!\n\n"
     
     description1 += "**" + user1.name + ": ** `" + str(user1_in_elite) + "/" + str(total_fighters) + "` - `" + user1_percentage + "%`\n"
-    description1 += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user1_eliteRoster.items()])
+    description1 += "> " + "".join([fighters[char]["emoji"] if value else "" for char, value in user1_eliteRoster.items()])
     description2 = "**" + user2name + ": ** `" + str(user2_in_elite) + "/" + str(total_fighters) + "` - `" + user2_percentage + "%`\n"
-    description2 += "> " + "".join([fighter_emojis[char] if value else "" for char, value in user2_eliteRoster.items()])
+    description2 += "> " + "".join([fighters[char]["emoji"] if value else "" for char, value in user2_eliteRoster.items()])
 
     description3 = "**Fighters in Common:** `" + str(fighters_in_common) + "/" + str(total_fighters) + "` - `" + fighters_in_common_percentage + "%`\n"
-    description3 += "> " + "".join([fighter_emojis[char] if value and user2_eliteRoster[char] else "" for char, value in user1_eliteRoster.items()])
+    description3 += "> " + "".join([fighters[char]["emoji"] if value and user2_eliteRoster[char] else "" for char, value in user1_eliteRoster.items()])
 
     if (len(description1)+len(description2)+len(description3)) < 4096:
         embed = nextcord.Embed(title="Elite Smash Stats Comparison", description=description1 + "\n\n" + description2 + "\n\n" + description3)
@@ -321,14 +301,14 @@ async def modify_elite(interaction: Interaction,
     if action == "Add":
         user_data = users_collection.find_one({"userID": userID})
         if not user_data:
-            eliteRoster = {char: False for char in characters}
+            eliteRoster = {char: False for char in fighters_list}
             eliteRoster[fighter] = True
             users_collection.insert_one({"userID": userID, "eliteRoster": eliteRoster})
         else:
             eliteRoster = user_data["eliteRoster"]
             eliteRoster[fighter] = True
             users_collection.update_one({"userID": userID}, {"$set": {"eliteRoster": eliteRoster}})
-        description = "Added " + fighter_emojis[fighter] + " to your Elite roster!\n\n"
+        description = "Added " + fighters[fighter]["emoji"] + " to your Elite roster!\n\n"
     elif action == "Remove":
         user_data = users_collection.find_one({"userID": userID})
         if not user_data:
@@ -340,11 +320,11 @@ async def modify_elite(interaction: Interaction,
             eliteRoster = user_data["eliteRoster"]
             eliteRoster[fighter] = False
             users_collection.update_one({"userID": userID}, {"$set": {"eliteRoster": eliteRoster}})
-            description = "Removed " + fighter_emojis[fighter] + " from your Elite roster!\n\n"
+            description = "Removed " + fighters[fighter]["emoji"] + " from your Elite roster!\n\n"
     elif action == "Add All":
         user_data = users_collection.find_one({"userID": userID})
         if not user_data:
-            eliteRoster = {char: True for char in characters}
+            eliteRoster = {char: True for char in fighters_list}
             users_collection.insert_one({"userID": userID, "eliteRoster": eliteRoster})
         else:
             eliteRoster = user_data["eliteRoster"]
@@ -368,10 +348,10 @@ async def modify_elite(interaction: Interaction,
 
     percentage = "{:.2f}".format((sum(eliteRoster.values()) / total_fighters) * 100)
     description += "**In Elite:** `" + str(sum(eliteRoster.values())) + "/" + str(total_fighters) + "` - `" + percentage + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if value else "" for char, value in eliteRoster.items()])
+    description += "> " + "".join([fighters[char]["emoji"] if value else "" for char, value in eliteRoster.items()])
     if not_in_roster != 0:
         description += "\n\n**Not In Elite:** `" + str(not_in_roster) + "/" + str(total_fighters) + "` - `" + "{:.2f}".format(((total_fighters - sum(eliteRoster.values())) / total_fighters) * 100) + "%`\n"
-        description += "> " + "".join([fighter_emojis[char] if not value else "" for char, value in eliteRoster.items()])
+        description += "> " + "".join([fighters[char]["emoji"] if not value else "" for char, value in eliteRoster.items()])
 
     embed = nextcord.Embed(title="Elite Smash Stats", description=description)
     message_embed_color(embed)
@@ -388,11 +368,11 @@ async def fighter_autocomplete(interaction: Interaction, fighter: str, action: s
 
     if not fighter:
         # Send the full autocomplete list trimmed to 25
-        await interaction.response.send_autocomplete(characters[:25])
+        await interaction.response.send_autocomplete(fighters_list[:25])
         return
     
     # Send a list of nearest matches from the list of fighters
-    get_near_fighter = [char for char in characters if char.lower().startswith(fighter.lower())]
+    get_near_fighter = [char for char in fighters_list if char.lower().startswith(fighter.lower())]
     await interaction.response.send_autocomplete(get_near_fighter[:25])
 
 
@@ -435,7 +415,7 @@ async def random(interaction: Interaction, message: Optional[str] = SlashOption(
             fighter = "ike"
     
     if not fighter:
-        fighter = fighters[r.randint(0, len(fighters) - 1)]
+        fighter = fighters[r.choice(fighters_list)]["url"]
     
     if fighter == "mii_brawler":
         alt = str(r.randint(0, 1))
@@ -454,18 +434,6 @@ async def random(interaction: Interaction, message: Optional[str] = SlashOption(
     embed.set_image(url=random_image)
     message_embed_color(embed)
     await interaction.response.send_message(embed=embed)
-
-
-# @bot.slash_command(name="ridley", description="Random Ridley portrait")
-# async def ridley(interaction: Interaction, message: Optional[str] = SlashOption(required=False, description="Image title")):
-#     ridley_image = "https://github.com/chriscolomb/ssbu/raw/master/ridley/ridley_" + str(r.randint(0, 7)) + ".png"
-
-#     embed = nextcord.Embed(
-#         title = message
-#     )
-#     embed.set_image(url=ridley_image)
-#     message_embed_color(embed)
-#     await interaction.response.send_message(embed=embed)
 
 
 @bot.slash_command(name="judge", description="Random judge (cannot get the same number twice in a row)")
@@ -782,210 +750,128 @@ async def patrons(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+class ChallengeView(View):
+    def __init__(self, interaction, completed_fighters, remaining_fighters, current_fighter, timeout=900):
+        super().__init__(timeout=timeout)
+        self.interaction = interaction
+        self.completed_fighters = completed_fighters
+        self.remaining_fighters = remaining_fighters
+        self.current_fighter = current_fighter
 
-# @bot.slash_command(name="matchbox", description="See MatchBox ranking")
-# async def matchbox(interaction: Interaction):
-#     url = "https://smashpros.gg/user/teamduck"
+    @nextcord.ui.button(label="Win", style=nextcord.ButtonStyle.green)
+    async def win_button(self, button: Button, interaction: Interaction):
+        if interaction.user != self.interaction.user:
+            await interaction.response.send_message("You are not authorized to use this button.", ephemeral=True)
+            return
 
-#     # Fetch the HTML content from the URL
-#     response = requests.get(url)
-#     html_content = response.text
+        self.completed_fighters[self.current_fighter] = True
+        self.remaining_fighters.remove(self.current_fighter)
+        if len(self.remaining_fighters) == 0:
+            description = "Congrats, `" + interaction.user.name + "`! You completed the Ironman Challenge!"
+            description += "\n\n**Completed Fighters:**\n"
+            description += "> " + "".join([fighters[char]["emoji"] for char, value in self.completed_fighters.items() if value])
+            embed = nextcord.Embed(
+                title="Ironman Challenge",
+                description=description
+            )
+            message_embed_color(embed)
+            await interaction.message.edit(embed=embed, view=None)
+        else:
+            self.current_fighter = self.remaining_fighters[0]
+            await self.update_embed(interaction)
 
-#     # Parse the HTML using BeautifulSoup
-#     soup = BeautifulSoup(html_content, 'html.parser')
+    @nextcord.ui.button(label="Lose", style=nextcord.ButtonStyle.red)
+    async def lose_button(self, button: Button, interaction: Interaction):
+        if interaction.user != self.interaction.user:
+            await interaction.response.send_message("You are not authorized to use this button.", ephemeral=True)
+            return
 
-#     # Extract the desired information
-#     mmr_element = soup.find('div', class_='v-list-item-subtitle')  # Assuming the MMR is inside a div with this class
-#     mmr = mmr_element.text.strip().split()[0]  # Extracting the numerical part of the MMR
+        completed_count = sum(self.completed_fighters.values())
+        percentage = "{:.2f}".format((completed_count / len(self.completed_fighters)) * 100)
+        description = "Thanks for playing! You completed " + str(completed_count) + "/86 (" + percentage + "%) fighters!"
+        description += "\n\n**Completed Fighters:**\n"
+        if not any(self.completed_fighters.values()):
+            description += "> `None`"
+        else:
+            description += "> " + "".join([fighters[char]["emoji"] if value else "" for char, value in self.completed_fighters.items()])
+        description += "\n\n**Remaining Fighters:**\n"
+        description += "> " + "".join([fighters[char]["emoji"] for char in self.remaining_fighters])
+        embed = nextcord.Embed(
+            title="Ironman Challenge",
+            description=description
+        )
+        message_embed_color(embed)
+        await interaction.message.edit(embed=embed, view=None)
 
-#     win_loss_element = soup.find('span', class_='font-weight-bold text-green')  # Assuming the win count is inside a span with this class
-#     win_count = win_loss_element.text.strip().split()[0]  # Extracting the numerical part of the win count
+    async def update_embed(self, interaction: Interaction):
+        fighter = self.current_fighter
+        fighter_url = fighters[fighter]["url"]
 
-#     loss_element = soup.find('span', class_='font-weight-bold text-red')  # Assuming the loss count is inside a span with this class
-#     loss_count = loss_element.text.strip().split()[0]  # Extracting the numerical part of the loss count
+        if fighter_url == "mii_brawler":
+            alt = str(r.randint(0, 1))
+        elif fighter_url == "mii_swordfighter":
+            alt = '0'
+        elif fighter_url == "mii_gunner":
+            alt = str(r.randint(0, 2))
+        else:
+            alt = str(r.randint(0, 7))
 
+        random_image = "https://github.com/chriscolomb/ssbu/raw/master/portraits/fighters/" + fighter_url + '/' + alt + ".png"
 
-#     embed = nextcord.Embed(
-#         title = "MatchBox Ranking for TeamDuck",
-#         description = "MMR: " + mmr + "\n" + "Wins: " + win_count + "\n" + "Losses: " + loss_count
-#     )
-    
-    
-#     message_embed_color(embed)
-#     await interaction.response.send_message(embed=embed)
+        description = "Play as " + fighters[fighter]["emoji"] + " in your next match!"
+        description += "\n\n**Completed Fighters:**\n"
+        description += "> " + "".join([fighters[char]["emoji"] for char, value in self.completed_fighters.items() if value])
+        description += "\n\n**Remaining Fighters:**\n"
+        description += "> " + "".join([fighters[char]["emoji"] for char in self.remaining_fighters])
 
+        embed = nextcord.Embed(
+            title="Ironman Challenge",
+            description=description
+        )
+        embed.set_image(url=random_image)
+        completed_count = sum(self.completed_fighters.values())
+        percentage = "{:.2f}".format((completed_count / len(self.completed_fighters)) * 100)
+        footer = str(completed_count) + "/86 (" + percentage + "%) fighters completed!\nWin or Lose?"
+        embed.set_footer(text=footer)
+        message_embed_color(embed)
+        await interaction.message.edit(embed=embed, view=self)
 
-# @bot.slash_command(name="workout", description="Workout and Smash!")
-# @bot.command()
-# async def menu_example(interaction: Interaction, user: nextcord.User):
-#     await MyButtonMenu().start(interaction)
-# async def workout(interaction: Interaction, user: nextcord.User):
-#     p1 = interaction.user
-#     p2 = user
-#     embed = nextcord.Embed(
-#         description = f"{p2.mention}, **Workout and Smash** with {p1.name}?",
-#     )
-#     message_embed_color(embed)
-#     await interaction.response.send_message(embed=embed)
+@bot.slash_command(name="ironman", description="Ironman challenge")
+async def ironman(interaction: Interaction):
+    remaining_fighters = list(fighters.keys())
+    r.shuffle(remaining_fighters)
+    completed_fighters = {fighter: False for fighter in remaining_fighters}
 
-#     # Create a yes/no button view
-#     view = View()
-#     view.add_item(Button(style=nextcord.ButtonStyle.green, label="Yes", custom_id="yes"))
-#     view.add_item(Button(style=nextcord.ButtonStyle.red, label="No", custom_id="no"))
+    current_fighter = remaining_fighters[0]
+    fighter_url = fighters[current_fighter]["url"]
 
-#     await interaction.edit_original_message(view=view, embed=embed)
+    if fighter_url == "mii_brawler":
+        alt = str(r.randint(0, 1))
+    elif fighter_url == "mii_swordfighter":
+        alt = '0'
+    elif fighter_url == "mii_gunner":
+        alt = str(r.randint(0, 2))
+    else:
+        alt = str(r.randint(0, 7))
 
-#     if interaction.custom_id == "yes":
-#             # Modify the view or perform an action here
-#             embed = nextcord.Embed(
-#                 description = "You clicked yes!",
-#             )
-#             await interaction.edit_original_message(view=view, embed=embed)
+    random_image = "https://github.com/chriscolomb/ssbu/raw/master/portraits/fighters/" + fighter_url + '/' + alt + ".png"
 
-#     # @bot.event
-#     # async def on_yes(interaction):
-        
-#             # await interaction.message.edit("You clicked the Yes button!", ephemeral=True)
-#             # You can modify the view or take further action as needed
+    description = "Play as " + fighters[current_fighter]["emoji"] + " in your next match!"
+    description += "\n\n**Completed Fighters:**\n"
+    description += "> `None`"
+    description += "\n\n**Remaining Fighters:**\n"
+    description += "> " + "".join([fighters[char]["emoji"] for char in remaining_fighters])
 
-#     try:
-#         response = await bot.wait_for("button_click", timeout=900, check=lambda i: i.custom_id in ["yes", "no"])
-#         if response.custom_id == "yes":
-#             await interaction.send(f"What workouts do you want to include, {target.mention}?")
+    embed = nextcord.Embed(
+        title="Ironman Challenge",
+        description=description
+    )
+    embed.set_image(url=random_image)
+    embed.set_footer(text="Win or Lose?")
+    message_embed_color(embed)
+    view = ChallengeView(interaction, completed_fighters, remaining_fighters, current_fighter)
+    await interaction.response.send_message(embed=embed, view=view)
 
-#             # Create a picklist with workout options
-#             workout_options = [
-#                 SelectOption(label="Push-Ups", value="pushups"),
-#                 SelectOption(label="Squats", value="squats"),
-#                 SelectOption(label="Pull-Ups", value="pullups"),
-#             ]
-#             workout_select = SelectOption(options=workout_options, custom_id="workout_select")
-
-#             await interaction.response.edit_message("Choose the workouts you want to include:", view=workout_select)
-
-#             try:
-#                 workout_response = await bot.wait_for("select_option", timeout=900, check=lambda i: i.custom_id == "workout_select")
-#                 selected_workouts = [option.value for option in workout_response.selected_options]
-
-#                 if not selected_workouts:
-#                     await interaction.send("No workouts selected.")
-#                 else:
-#                     await interaction.send("Do you want to include more workouts?")
-
-#                     # Create a picklist with yes/no options for more workouts
-#                     more_workouts_options = [
-#                         SelectOption(label="No", value="no"),
-#                         SelectOption(label="Not selected workouts", value="not_selected"),
-#                     ]
-#                     more_workouts_select = Select(options=more_workouts_options, custom_id="more_workouts_select")
-
-#                     await interaction.send("Choose an option:", view=more_workouts_select)
-
-#                     try:
-#                         more_workouts_response = await bot.wait_for("select_option", timeout=900, check=lambda i: i.custom_id == "more_workouts_select")
-#                         if more_workouts_response.values[0] == "no":
-#                             await interaction.send("No more workouts will be added.")
-#                         elif more_workouts_response.values[0] == "not_selected":
-#                             await interaction.send("How many reps per stock taken? (Please reply with a number)")
-
-#                             def is_valid_number(message):
-#                                 return message.content.isdigit()
-
-#                             reps_message = await bot.wait_for("message", timeout=900, check=is_valid_number)
-#                             reps_per_stock = int(reps_message.content)
-
-#                             await interaction.send("Let the workout begin! How many stocks left?")
-
-#                             # Create buttons for stock count
-#                             view = View()
-#                             for i in range(4):
-#                                 view.add_item(Button(style=nextcord.ButtonStyle.primary, label=str(i), custom_id=str(i)))
-#                             await interaction.send(view=view)
-
-#                             async def wait_for_buttons():
-#                                 while True:
-#                                     try:
-#                                         button_response = await bot.wait_for("button_click", timeout=900, check=lambda i: i.custom_id in ["0", "1", "2", "3"])
-#                                         await interaction.send(
-#                                             f"{author.mention} has taken {button_response.custom_id} stocks, and {target.mention} has taken {button_response.custom_id} stocks. "
-#                                             f"They each did {reps_per_stock} reps per stock."
-#                                         )
-#                                     except nextcord.errors.NotFound:
-#                                         break
-
-#                             await wait_for_buttons()
-#                     except asyncio.TimeoutError:
-#                         await interaction.send("Timed out. No more workouts will be added.")
-#             except asyncio.TimeoutError:
-#                 await interaction.send("Timed out. No workouts selected.")
-#         elif response.custom_id == "no":
-#             await interaction.send(f"{target.mention} declined the workout.")
-#     except asyncio.TimeoutError:
-#         await interaction.send("Timed out. No response received.")
-
-
-
-
-# @bot.slash_command(name="edit", description="Edit Larry's message")
-# async def edit(interaction: Interaction, option: str = SlashOption(choices = {"graphic": "graphic"}, description="Choose edit option")):
-#     # get the message object by ID
-#     message = await ctx.channel.fetch_message(message_id)
-    
-#     # modify the image in the embed
-#     embed = message.embeds[0]  # assuming there's only one embed in the message
-#     embed.set_image(url=image_url)
-
-#     # update the message with the modified embed
-#     await message.edit(embed=embed)
-
-#     # send a confirmation message
-#     await ctx.send(f"Image of message {message_id} has been updated to {image_url}")
-
-
-# # @bot.command()
-# # async def ironman(ctx):
-# #     ongoing = True
-# #     percentage = 0
-# #     characters_left = 86
-# #     while ongoing:
-# #         embed = nextcord.Embed(title="Ironman Challenge")
-# #         percentage_field = str(percentage/100) + "% Complete"
-# #         embed.add_field(name=percentage_field, value="Next Character:")
-# #         random_image = "https://github.com/chriscolomb/ssbu/raw/master/random/random_" + str(r.randint(0, 669)) + ".png"
-# #         embed.set_image(url=random_image)
-# #         footer_text = str(characters_left) + " Characters Left!"
-# #         embed.set_footer(text=footer_text)
-# #         characters_left -= 1
-# #         # buttons = ()
-# #         ongoing = False
-# #     # await ctx.channel.send(embed=embed, view=buttons)
-# #     await ctx.channel.send(embed=embed)
-
-# # @bot.command()
-# # async def CB(ctx, user: nextcord.Member, size):
-# #     channel = bot.get_channel(ctx.channel.id)
-# #     guild_id = ctx.message.guild.id
-# #     server = bot.get_guild(guild_id)
-# #     p1_username = str(server.get_member(ctx.author.id))
-# #     p2_username = str(server.get_member(user.id))
-
-# #     # Error handling
-# #     if user.id == ctx.author.id:
-# #         embed = nextcord.Embed(
-# #                 title="You cannot initiate a Crew Battle with yourself."
-# #         )
-# #         message_embed_color(embed)
-# #         await ctx.channel.send(embed=embed)
-# #         return None
-# #     elif channel.type == nextcord.ChannelType.public_thread:
-# #         embed = nextcord.Embed(
-# #             title="Cannot do `!CB` command within a thread!"
-# #         )
-# #         message_embed_color(embed)
-# #         await ctx.channel.send(embed=embed)
-# #         return None
-
-# #     await ctx.channel.send("1v1 is size " + str(size))
 
 def shutdown_handler(signum, frame):
     print('Received signal {}. Shutting down...'.format(signum))

@@ -369,8 +369,9 @@ async def modify_elite(interaction: Interaction,
     percentage = "{:.2f}".format((sum(eliteRoster.values()) / total_fighters) * 100)
     description += "**In Elite:** `" + str(sum(eliteRoster.values())) + "/" + str(total_fighters) + "` - `" + percentage + "%`\n"
     description += "> " + "".join([fighter_emojis[char] if value else "" for char, value in eliteRoster.items()])
-    description += "\n\n**Not In Elite:** `" + str(not_in_roster) + "/" + str(total_fighters) + "` - `" + "{:.2f}".format(((total_fighters - sum(eliteRoster.values())) / total_fighters) * 100) + "%`\n"
-    description += "> " + "".join([fighter_emojis[char] if not value else "" for char, value in eliteRoster.items()])
+    if not_in_roster != 0:
+        description += "\n\n**Not In Elite:** `" + str(not_in_roster) + "/" + str(total_fighters) + "` - `" + "{:.2f}".format(((total_fighters - sum(eliteRoster.values())) / total_fighters) * 100) + "%`\n"
+        description += "> " + "".join([fighter_emojis[char] if not value else "" for char, value in eliteRoster.items()])
 
     embed = nextcord.Embed(title="Elite Smash Stats", description=description)
     message_embed_color(embed)

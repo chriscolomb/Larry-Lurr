@@ -1,20 +1,23 @@
 import asyncio
-import nextcord
+import os
 import random as r
-from nextcord import Interaction, InteractionMessage, SlashOption, SelectOption
-# from nextcord.abc import GuildChannel
-from nextcord.ext import commands
-from nextcord.ui import View, Button
+import signal
 from typing import Optional
-from graphql import getTop8, getSeeding
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from graphql import getSeeding, getTop8
+import nextcord
+from nextcord import Interaction, InteractionMessage, SelectOption, SlashOption
+from nextcord.ext import commands
+from nextcord.ui import Button, View
 from patreon import getPatrons
 import requests
-from bs4 import BeautifulSoup
-# from buttons import MyButtonMenu
+
+# Updated PyMongo imports
+import certifi
 from pymongo import MongoClient, errors
-import os
-import signal
-from dotenv import load_dotenv
+from pymongo.server_api import ServerApi
+
 load_dotenv()
 
 intents = nextcord.Intents.default()
@@ -125,13 +128,21 @@ fighters_list = list(fighters.keys())
 mongo_uri = os.getenv("MONGODB_URI")
 client = None
 db = None
+users_collection = None
 
 try:
-    client = MongoClient(mongo_uri)
-    client.admin.command('ismaster')
+    # Added tlsCAFile=certifi.where() to fix macOS SSL verification issues
+    client = MongoClient(
+        mongo_uri, 
+        server_api=ServerApi('1'), 
+        tlsCAFile=certifi.where()
+    )
+    
+    client.admin.command('ping')
+    
     db = client['Database']
     users_collection = db['Users']
-    print("MongoDB connection successful.")
+    print("Pinged your deployment. You successfully connected to MongoDB!")
 except errors.ConnectionFailure as e:
     print(f"MongoDB connection failed: {e}")
 except errors.ConfigurationError as e:
